@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  
+  <!-- add angular js lib -->
+  <script src="js/angular.min.js"></script>
+  
+<body>
+
+<!-- init evidence questions on form --> 
+<div ng-app="calApp" ng-controller="calCtrl" ng-init="questions=[
+{question:'Sub type', options: [{option: 'Inhibition', answer: 'yes'}]},
+{question:'Assay Type', options: [{option: 'Human Tissue', answer: 'no'}]},
+{question:'Metabolic Inhibitor', options: [{option: 'Antibody', answer: 'yes'}]}
+]">
+
+<ul>
+  <li ng-repeat="q in questions">
+    {{ q.question }}
+    <ul>
+      <li ng-repeat="op in q.options">
+	{{op.option}}
+	{{op.answer}}
+      </li>
+    </ul>
+  </li>
+</ul>
+  
+</div>
+
+<!-- calculator controller -->
+<script src="js/calApp.js"></script>
+<script src="js/calCtrl.js"></script>
+
+</body>
+</html>
