@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <script src="drivecalculator.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href= "style.css"/>
+</head>
+
+<body>   
+  <!-- Header bar -->
+  <div class="page-header">
+    <div class="container-fluid">
+      <h3>DRIVE <small>Evidence Calculator</small></h3>
+    </div>
+  </div>
+  <br>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <!-- Content #1 -->
+        <div class="dropdown">
+          <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Evidence Type
+          <span class="caret"></span></button>
+          <ul class="dropdown-menu">
+            <li><a tabindex="-1" href="#" id= "1">Case Report</a></li>
+            <li><a tabindex="-1" href="#" id= "2">Clinical Trial</a></li>
+            <li class="dropdown-submenu">
+              <a class="test" tabindex="-1" href="#">Experiment<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a tabindex="-1" href="#" id= "3">Metabolic</a></li>
+                <li><a tabindex="-1" href="#" id= "4">Transport</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <br>
+
+      <!-- Content #2 -->
+        <div class= "radioform" style='display:none;' id='caseReport'>
+          <h5>Please answer the following questions.</h5><br>
+          <form>
+            Previous Credible Reports in Humans:
+            <label class="radio-inline">
+            <input type="radio" name= "optradio1">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio1">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio1">Unsure
+            </label>
+          </form>
+
+          <!-- EX for switch based on form response
+          <div ng-switch="myVar">
+            <div ng-switch-when="inhibition">
+
+            </div>
+          </div> -->
+
+          <form>
+            Interaction Consistent with Known Interactive Qualities of the Precipitant Drug:
+            <label class="radio-inline">
+            <input type="radio" name= "optradio2">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio2">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio2">Unsure
+            </label>
+          </form>
+
+
+          <form>
+            Interaction Consistent with Known Interactive Qualities of the Object Drug:
+            <label class="radio-inline">
+            <input type="radio" name= "optradio3">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio3">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio3">Unsure
+            </label>
+          </form>
+
+          <form>
+            Interaction Consistent with Known Reasonable Time Course of the Interaction (onset and/or offest):
+            <label class="radio-inline">
+            <input type="radio" name= "optradio4">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio4">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio4">Unsure
+            </label>
+          </form>
+
+          <form>
+            Did the interaction remit upon de-challenge of the precipitant drug with no change in oject drug? (If no de-challenge, use unknown and skip to question 6):
+            <label class="radio-inline">
+            <input type="radio" name= "optradio5">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio5">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio5">Unsure
+            </label>
+          </form>
+
+          <form>
+            Did the interaction reappear when precipitant drug was readministered with continued used of object drug?:
+            <label class="radio-inline">
+            <input type="radio" name= "optradio6">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio6">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio6">Unsure
+            </label>
+          </form>
+
+          <form>
+            Reasonable alernative causes:
+            <label class="radio-inline">
+            <input type="radio" name= "optradio7">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio7">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio7">Unsure
+            </label>
+          </form>
+
+          <form>
+            Was the object drug detected in the blood or other fluids in concentrations consistent with the interaction?:
+            <label class="radio-inline">
+            <input type="radio" name= "optradio8">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio8">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio8">Unsure
+            </label>
+          </form>
+
+          <form>
+            Was the drug interaction confirmed by objective evidence consistent with the affects on the object drug (other than from question 8)?:
+            <label class="radio-inline">
+            <input type="radio" name= "optradio9">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio9">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio9">Unsure
+            </label>
+          </form>
+
+          <form>
+            Was the interaction greater when the precipitant dose was increased or less when the precipitant dose was decreased?:
+            <label class="radio-inline">
+            <input type="radio" name= "optradio10">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio10">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" name= "optradio10">Unsure
+            </label>
+          </form>
+          <br>
+        </div>
+
+      <!-- Content #3 -->
+        <div class= "radioform" style='display:none;' id='clinicalTrial'>
+          <h5>Please answer the following questions.</h5><br>
+          <form>
+            Group Randomization:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="yes">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="no">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+
+          <form>
+            Parallel Group Design:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="yes">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="no">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+
+
+          <form>
+            Study Focused on Pharmacokinetic Processes:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="yes">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="no">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+
+          <form>
+            Phenotyping:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="yes">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="no">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+
+          <form>
+            Genotyping:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="yes">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="no">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+          <br>
+        </div>
+
+      <!-- Content #4 -->
+        <div class= "radioform" style='display:none;' id='metabolic'>
+          <h5>Please answer the following questions.</h5><br>
+          <form>
+            Subtype:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="inhibition">Inhibition
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="identification">Identification
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+            
+          <form>
+            Assay Type:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="humanTissue">Human Tissue
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="cellLine">Cell Line
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+
+          <form>
+            Metabolic Inhibitor:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="antibody">Antibody
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="chemical">Chemical
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+          <br>
+        </div>
+
+      <!-- Content #5 -->
+        <div class= "radioform" style='display:none;' id='transport'>
+          <h5>Please answer the following questions.</h5><br>
+          <form>
+            Subtype:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="inhibition">Inhibition
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="identification">Identification
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+            
+          <form>
+            Assay Type:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="cacoTwoCellLines">Caco 2 Cell Lines
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="overExpressedCellLines">Overexpressed Cell Lines
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+
+          <form>
+            Transporter Protein:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="pGlycoprotein">P-Glycoprotein
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="oatpOnebOne">OATP1B1
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="oatpOnebThree">OATP1B3
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+          <br>
+        </div>
+
+      <!-- Content #6 -->
+        <button type="button" class="btn btn-default" id = "calculate">Calculate</button>
+      
+      <!-- Content #7 --> 
+        <div id="confirmBox">
+        <div class="message"></div>
+        <span class="yes">Yes</span>
+        <span class="no">No</span>
+        </div>
+
+      <!-- Content #8 --> 
+
+      <!-- Content #9 -->
+        <div class= "radioform" style='display:none;' id='clinicalTrialIC'>
+            <h5>Please answer the following questions.</h5><br>
+            <form>
+              Was there a polymorphic assertion linked as an assumption for the intended use of the evidence item?
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="yes">Yes
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="no">No
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="unsure">Unsure
+              </label>
+            </form>
+            <form>
+              Was the specific genotype of the enzyme  noted in the description of evidence?
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="yes">Yes
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="no">No
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="unsure">Unsure
+              </label>
+            </form>
+            <form>
+              If the substrate is being evaluated to support or refute that drug is a substrate of P-Glycoprotein, did the study compare wild type to variants in ABCB1 including 3435C$>$T, 2677G$>$T and 1236C$>$T?
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="yes">Yes
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="no">No
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="unsure">Unsure
+              </label>
+            </form>
+            <form>
+              If the substrate is being evaluated to support or refute that drug is a substrate of OATP1B1, did the study compare wild type to variants in SLCO1B1?
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="yes">Yes
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="no">No
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="unsure">Unsure
+              </label>
+            </form>          
+            <form>
+              If the substrate is being evaluated to support of refute that a drug is a substrate of OATP1B3, did the study compare wild type to variants in SLCO1B3?
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="yes">Yes
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="no">No
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="unsure">Unsure
+              </label>
+            </form>  
+        </div>
+
+    <!-- Content #10 -->
+        <div class= "radioform" style='display:none;' id='experimentMetabolicIC'>
+            <h5>Please answer the following questions.</h5><br>
+            <form>
+              Enzyme Source:
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="humanHepatocytes">Human Hepatocytes
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="humanLiverMicrosomes">Human Liver Microsomes
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="humanRecombinantEnzymes">Human Recombinant Enzymes
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="unsure">Unsure
+              </label>
+            </form>
+            <form>
+              NADPH Regenerating System:
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="nadphAdded">NADPH added
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="nadphNotAdded">NADPH not added
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="unsure">Unsure
+              </label>
+            </form>         
+            <form>
+              Antibody Inhibitors:
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="aiUsed">AI used
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="aiNotUsed">AI not used
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="unsure">Unsure
+              </label>
+            </form>
+            <form>
+              In Vitro Selective Inhibitors:
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="ivsiUsed">IVSI used
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="ivsiNotUsed">IVSI not used
+              </label>
+              <label class="radio-inline">
+              <input type="radio" ng-model="myVar" value="unsure">Unsure
+              </label>
+            </form>
+        </div>
+
+    <!-- Content #11 -->
+        <div class= "radioform" style='display:none;' id='experimentTransportIC'>
+          <h5>Please answer the following questions.</h5><br>
+          <form>
+            Animal Study:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="yes">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="no">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+          <form>
+            In Vitro Inhibitor:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="yes">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="no">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+          <form>
+            Cell Line for P-Glycoprotein:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="caco2CellLines">Caco 2 CellLines
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="mdckmdr1">MDCK-MDR1
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure/NA
+            </label>
+          </form>
+          <form>
+            Appropriate Controls:
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="yes">Yes
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="no">No
+            </label>
+            <label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label>
+          </form>
+        </div>
+        
+    </div>
+  </div>
+</body>
+</html>
