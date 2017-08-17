@@ -1,0 +1,108 @@
+
+.page-header {
+	margin-top: 0%; 
+	background-color: royalblue;
+	margin: .05em;
+}
+
+.page-header h3{
+	color: white;
+	text-align: center;
+}
+
+.page-header small{
+	color: lightgray;
+	text-align: center;
+}
+
+.panel {
+	display: flex;
+}
+
+.dropdown {
+	margin-left: 50px;
+}
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+    top: 70%;
+    left: 100%;
+    margin-top: 1px;
+}
+ 
+.button {
+	margin-left: 100px;
+}
+
+#confirmBox{
+    display: none;
+    background-color: #eee;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    z-index: 1; 
+    position:relative;
+    width: 300px;
+    left: 50%;
+    margin-left: -150px;
+    padding: 6px 8px 8px;
+    box-sizing: border-box;
+    text-align: center;
+
+}
+#confirmBox .button {
+    background-color: #ccc;
+    display: inline-block;
+    border-radius: 3px;
+    border: 1px solid #aaa;
+    padding: 7px;
+    text-align: center;
+    width: 80px;
+    cursor: pointer;
+    z-index: 2;
+    position: relative;
+}
+#confirmBox .button:hover {
+    background-color: #ddd;
+}
+#confirmBox .message {
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+#confirmBoxTwo
+{
+    display: none;
+    background-color: #eee;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    z-index: 1; 
+    position:relative;
+    width: 300px;
+    left: 50%;
+    margin-left: -150px;
+    padding: 6px 8px 8px;
+    box-sizing: border-box;
+    text-align: center;
+
+}
+#confirmBoxTwo .button {
+    background-color: #ccc;
+    display: inline-block;
+    border-radius: 3px;
+    border: 1px solid #aaa;
+    padding: 7px;
+    text-align: center;
+    width: 80px;
+    cursor: pointer;
+    z-index: 2;
+    position: relative;
+}
+#confirmBoxTwo .button:hover {
+    background-color: #ddd;
+}
+#confirmBoxTwo .message {
+    text-align: left;
+    margin-bottom: 8px;
+}
