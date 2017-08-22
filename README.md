@@ -1,6 +1,12 @@
+=======================
 EvidenceType-Calculator
+=======================
 
 This project purpose for supporing identify most specific evidence type, serving form of evidence type related questions for Drug drug interaction including Clinical trial, Phenotype clinical study, Experiments, Case Report, etc
+
+-----------
+Deployment
+-----------
 
 Web2py framework
 Download:
@@ -17,3 +23,10 @@ ln -s /path/to/EvidenceType-Calculator /path/to/web2py/applications/
 Save modifications in git repository and refresh web2py index page will see your changes
 Example:
 http://127.0.0.1:8000/evidence_type_calculator/default/index
+
+---------------
+Initiate study
+---------------
+
+Requires csv file for assign tasks to users.
+columns: userId, evidenceId, assistWithInference
