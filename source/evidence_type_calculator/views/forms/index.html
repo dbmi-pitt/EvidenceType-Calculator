@@ -20,6 +20,10 @@
   <div class="panel panel-default">
     <div class="panel-body">
 
+      <form name="evidence-question-form" enctype="multipart/form-data" action="{{=URL('evidenceTypeQuestions')}}" method="post">
+	<input id="evidencetype-value" value="" type="hidden" name="evidencetype" />
+
+	<!-- METHOD SELECTION -->
         <div class="dropdown">
           <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Evidence Type
           <span class="caret"></span></button>
@@ -40,7 +44,6 @@
 	<!-- Case report -->
         <div class= "radioform" style='display:none;' id='caseReport'>
           <h5>Was this evidence type...</h5><br>
-          <form name="ct-form" enctype="multipart/form-data" action="{{=URL('caseReportForm')}}" method="post">
 	    <!-- Reporting an adverse event -->
 	    <table style="width:100%">
               <tr><td style="width:50%"><label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Reporting an adverse event? </label></td> 
@@ -83,16 +86,14 @@
 		    <input name="cr-ep" type="radio" ng-model="myVar" value="unsure">Unsure
             </label></td></tr></table>
 
-	    <button type="submit" class="btn btn-default" id = "calculateCR">Calculate</button>	    
-          </form>
+	    <!-- <button type="submit" class="btn btn-default" id = "calculateCR">Calculate</button>	     -->
         </div>
 
 	<!-- DDI Clinical trial -->
 	<div class= "radioform" style='display:none;' id='clinicalTrial'>
           <h5>Does this evidence type include...</h5><br>
 	  
-          <form name="ct-form" enctype="multipart/form-data" action="{{=URL('clinicalTrialForm')}}" method="post">
-	    
+          <!-- <form name="ct-form" enctype="multipart/form-data" action="{{=URL('clinicalTrialForm')}}" method="post"> -->	    
 	    <!-- CT-DDI Group Randomization radio button -->
             <table style="width:100%">
               <tr><td style="width:50%">
@@ -170,14 +171,13 @@
 		</label></td>
 		<td style="width:20%"><label class="radio-inline">
 		    <input name="ct-gt" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr></table>
-	    
-	    <button type="submit" class="btn btn-default" id = "calculateCT">Calculate</button>	    
-          </form>
+            </label></td></tr></table>	      
           <br>
 	  
         </div>
-
+	
+	<button type="submit" class="btn btn-default" id = "calculate">Calculate</button>	 
+      </form>
 	<!-- Content #4 Experiment-->
     <!--     <div class= "radioform" style='display:none;' id='metabolic'> -->
     <!--       <h5>Does this evidence type include...</h5><br> -->

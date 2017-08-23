@@ -6,20 +6,19 @@ def index():
     return dict(message=T('evidence type form!'))
 
 
-def clinicalTrialForm():
+def evidenceTypeQuestions():
 
-    print '[INFO] controller forms: clinicalTrialForm()...'
+    print '[INFO] controller evidenceTypeQuestions...'
     print request.vars
+    print request.vars.evidencetype
+
+    for k in request.vars:
+        print k, request.vars[k]
     # db.evidence_type.insert(id=2, document_id=2, participant='user1', method='DDI clinical trial')
+    # evidence type question form submit
+    
+    
     print db.executesql('SELECT * FROM evidence_type;')
     
-    return dict(message=T('clinical trial submit!'))
+    return dict(message=T('Evidence type questions submit!'))
 
-
-def caseReportForm():
-
-    print '[INFO] controller forms: caseReportForm()...'
-    print request.vars
-
-    # db = DAL('sqlite://storage.sqlite', pool_size=0)
-    return dict(message=T('clinical trial submit!'))
