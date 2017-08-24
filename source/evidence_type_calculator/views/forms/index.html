@@ -23,7 +23,7 @@
       <form name="evidence-question-form" enctype="multipart/form-data" action="{{=URL('evidenceTypeQuestions')}}" method="post">
 	<input id="evidencetype-value" value="" type="hidden" name="evidencetype" />
 
-	<!-- METHOD SELECTION -->
+	<!-- METHOD SELECTION ######################################## -->
         <div class="dropdown">
           <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Evidence Type
           <span class="caret"></span></button>
@@ -41,7 +41,7 @@
         </div>
         <br>
 
-	<!-- Case report -->
+	<!-- Case report ############################################## -->
         <div class= "radioform" style='display:none;' id='caseReport'>
           <h5>Was this evidence type...</h5><br>
 	    <!-- Reporting an adverse event -->
@@ -89,7 +89,7 @@
 	    <!-- <button type="submit" class="btn btn-default" id = "calculateCR">Calculate</button>	     -->
         </div>
 
-	<!-- DDI Clinical trial -->
+	<!-- DDI Clinical trial ########################################### -->
 	<div class= "radioform" style='display:none;' id='clinicalTrial'>
           <h5>Does this evidence type include...</h5><br>
 	  
@@ -172,117 +172,118 @@
 		<td style="width:20%"><label class="radio-inline">
 		    <input name="ct-gt" type="radio" ng-model="myVar" value="unsure">Unsure
             </label></td></tr></table>	      
-          <br>
+          <br>	  
+        </div>
+
+	<!-- Experiment metabolic ############################################### -->
+        <div class= "radioform" style='display:none;' id='metabolic'>
+
+	  <!-- metabolic experiment sub type -->
+          <table style="width:100%">
+            <tr><td style="width:50%">
+            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Subtype? </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="inhibition">Inhibition
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="identification">Identification
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label></td></tr>
+	  </table>
+
+	  <!-- metabolic experiment assay type -->
+          <table style="width:100%">
+            <tr><td style="width:50%">
+            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="humanTissue">Human Tissue
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="cellLine">Cell Line
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label></td></tr>
+	  </table>
+
+	  <!-- metabolic experiment metabolic inhibitor -->
+	  <table style="width:100%">
+            <tr><td style="width:50%">
+            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Metabolic Inhibitor? </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="antibody">Antibody
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="chemical">Chemical
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label></td></tr>
+	  </table>
 	  
+          <br>
+        </div>
+
+	<!-- Experiment transport ############################################### -->
+	<div class= "radioform" style='display:none;' id='transport'>
+          <form>
+          <table style="width:100%">
+            <tr><td style="width:50%">
+            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Subtype? </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="inhibition">Inhibition
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="identification">Identification
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label></td></tr>
+	  </table>
+
+          <table style="width:100%">
+            <tr><td style="width:50%">
+            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="cacoTwoCellLines">Caco 2 Cell Lines
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="overExpressedCellLines">Overexpressed Cell Lines
+            </label></td>
+            <td style="width:20%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label></td></tr>
+	  </table>
+
+          <table style="width:100%">
+            <tr><td style="width:40%">
+            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Transporter Protein? </label></td>
+            <td style="width:10%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="pGlycoprotein">P-Glycoprotein
+            </label></td>
+            <td style="width:10%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="oatpOnebOne">OATP1B1
+            </label></td>
+            <td style="width:10%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="oatpOnebThree">OATP1B3
+            </label></td>
+            <td style="width:10%"><label class="radio-inline">
+            <input type="radio" ng-model="myVar" value="unsure">Unsure
+            </label></td></tr>
+	  </table>
+          
+          <br>
         </div>
 	
 	<button type="submit" class="btn btn-default" id = "calculate">Calculate</button>	 
       </form>
-	<!-- Content #4 Experiment-->
-    <!--     <div class= "radioform" style='display:none;' id='metabolic'> -->
-    <!--       <h5>Does this evidence type include...</h5><br> -->
-    <!--       <form> -->
-    <!--       <table style="width:100%"> -->
-    <!--         <tr><td style="width:50%"> -->
-    <!--         <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Subtype? </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="inhibition">Inhibition -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="identification">Identification -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="unsure">Unsure -->
-    <!--         </label></td></tr></table> -->
-    <!--       </form> -->
-            
-    <!--       <form> -->
-    <!--       <table style="width:100%"> -->
-    <!--         <tr><td style="width:50%"> -->
-    <!--         <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="humanTissue">Human Tissue -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="cellLine">Cell Line -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="unsure">Unsure -->
-    <!--         </label></td></tr></table> -->
-    <!--       </form> -->
 
-    <!--       <form> -->
-    <!--       <table style="width:100%"> -->
-    <!--         <tr><td style="width:50%"> -->
-    <!--         <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Metabolic Inhibitor? </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="antibody">Antibody -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="chemical">Chemical -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="unsure">Unsure -->
-    <!--         </label></td></tr></table> -->
-    <!--       </form> -->
-    <!--       <br> -->
-    <!--     </div> -->
 
-    <!--   <\!-- Content #5 -\-> -->
-    <!--     <div class= "radioform" style='display:none;' id='transport'> -->
-    <!--       <h5>Does this evidence type include...</h5><br> -->
-    <!--       <form> -->
-    <!--       <table style="width:100%"> -->
-    <!--         <tr><td style="width:50%"> -->
-    <!--         <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Subtype? </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="inhibition">Inhibition -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="identification">Identification -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="unsure">Unsure -->
-    <!--         </label></td></tr></table> -->
-    <!--       </form> -->
-            
-    <!--       <form> -->
-    <!--       <table style="width:100%"> -->
-    <!--         <tr><td style="width:50%"> -->
-    <!--         <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="cacoTwoCellLines">Caco 2 Cell Lines -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="overExpressedCellLines">Overexpressed Cell Lines -->
-    <!--         </label></td> -->
-    <!--         <td style="width:20%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="unsure">Unsure -->
-    <!--         </label></td></tr></table> -->
-    <!--       </form> -->
 
-    <!--       <form> -->
-    <!--       <table style="width:100%"> -->
-    <!--         <tr><td style="width:40%"> -->
-    <!--         <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Transporter Protein? </label></td> -->
-    <!--         <td style="width:10%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="pGlycoprotein">P-Glycoprotein -->
-    <!--         </label></td> -->
-    <!--         <td style="width:10%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="oatpOnebOne">OATP1B1 -->
-    <!--         </label></td> -->
-    <!--         <td style="width:10%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="oatpOnebThree">OATP1B3 -->
-    <!--         </label></td> -->
-    <!--         <td style="width:10%"><label class="radio-inline"> -->
-    <!--         <input type="radio" ng-model="myVar" value="unsure">Unsure -->
-    <!--         </label></td></tr></table> -->
-    <!--       </form> -->
-    <!--       <br> -->
-    <!--     </div> -->
 
-    <!--   <\!-- Content #6 -\-> -->
-    <!--     <button type="button" class="btn btn-default" id = "calculate">Calculate</button> -->
+
       
     <!--   <\!-- Content #7 -\->  -->
     <!--     <div id="confirmBox"> -->

@@ -42,6 +42,7 @@ $(document).ready(function(){
 	e.preventDefault();
 	hideForms();
 	$("#metabolic").css("display","block");
+	$("#evidencetype-value").attr("value","Metabolic Experiment");
 	emStatus = true;
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
 	$("#transport").css("display","none");
@@ -51,6 +52,7 @@ $(document).ready(function(){
 	e.preventDefault();
 	hideForms();
 	$("#transport").css("display","block");
+	$("#evidencetype-value").attr("value","Transport Experiment");
 	etStatus = true;
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
     });
