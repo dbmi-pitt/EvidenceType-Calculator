@@ -33,7 +33,7 @@ $(document).ready(function(){
 	e.preventDefault();
 	hideForms();
 	$("#clinicalTrial").css("display","block");
-	$("#evidencetype-value").attr("value","DDI Clinical trial");
+	$("#evidencetype-value").attr("value","DDI clinical trial");
 	ctStatus = true;
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
     });
