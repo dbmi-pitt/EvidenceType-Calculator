@@ -2,7 +2,7 @@
 # this file is released under public domain and you can use without limitations
 
 def index():
-
+    print '[INFO] controller index...'    
     response.flash = T("test")    
     return dict(message = "Evidence type questions", inferred_evidence_type = "")
 
@@ -47,12 +47,9 @@ def evidenceTypeQuestions():
 
     # evidence type inference
     inferred_evidence_type = evidenceTypeInference()
-
-    response.message = "Evidence type questions submit!"
-    response.inferred_evidence_type = inferred_evidence_type
-    # return dict()
-    # return dict(message = "Evidence type questions submit!", inferred_evidence_type = inferred_evidence_type)
-    # return {"message": "Evidence type questions submit!", "inferred_evidence_type": inferred_evidence_type}
+    response.view = "default/index.html"
+    print inferred_evidence_type
+    return dict(message = "Evidence type questions submit!", inferred_evidence_type = inferred_evidence_type)
 
 
 # insert question and answer to evidence_type_question table
