@@ -1,62 +1,90 @@
 # -*- coding: utf-8 -*-
 # this file is released under public domain and you can use without limitations
 
-# -------------------------------------------------------------------------
-# This is a sample controller
-# - index is the default action of any application
-# - user is required for authentication and authorization
-# - download is for downloading files uploaded in the db (does streaming)
-# -------------------------------------------------------------------------
-
-
 def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
 
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
-    # return redirect(URL('../forms/index'))
+    response.flash = T("test")    
+    return dict(message = "Evidence type questions", inferred_evidence_type = "")
 
 
-def user():
-    """
-    exposes:
-    http://..../[app]/default/user/login
-    http://..../[app]/default/user/logout
-    http://..../[app]/default/user/register
-    http://..../[app]/default/user/profile
-    http://..../[app]/default/user/retrieve_password
-    http://..../[app]/default/user/change_password
-    http://..../[app]/default/user/bulk_register
-    use @auth.requires_login()
-        @auth.requires_membership('group name')
-        @auth.requires_permission('read','table name',record_id)
-    to decorate functions that need access control
-    also notice there is http://..../[app]/appadmin/manage/auth to allow administrator to manage users
-    """
-    return dict(form=auth())
+def evidenceTypeQuestions():
+    
+    print '[INFO] controller evidenceTypeQuestions...'
+    
+    # trucate all data - only for dev/test
+    truncateAllTables()
+
+    qsMap = {"ct-gr": "Group Randomization?", "ct-pgd": "Parallel Group Design?", "ct-pk": "Study Focused on Pharmacokinetic Processes?", "ct-ph": "Phenotyping?", "ct-gt": "Genotyping?", "cr-ae": "Reporting an adverse event?", "cr-pr": "Publically reported?", "cr-ep": "Following an evaluation protocol?", "exp-m-st": "Subtype?", "exp-m-at": "Assay Type?", "exp-m-mi": "Metabolic Inhibitor?", "exp-t-st": "Subtype?", "exp-t-at": "Assay Type?", "exp-t-tp": "Transporter Protein?"}
+    user = "Ivan"
+
+    crQsCodes = ["cr-ae", "cr-pr", "cr-ep"]
+    ctQsCodes = ["ct-gr", "ct-pgd", "ct-pk", "ct-ph", "ct-gt"]
+    expMbQsCodes = ["exp-m-st", "exp-m-at", "exp-m-mi"]
+    expTsQsCodes = ["exp-t-st", "exp-t-at", "exp-t-tp"]
+
+    print request.vars    
+    evidence_type = request.vars.evidencetype
+
+    ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=False)    
+    ev_type_id = db.evidence_type.insert(document_id=1, participant=user, method=evidence_type, is_started=True, evidence_type_form_id = ev_form_id)
+
+    if evidence_type == "DDI clinical trial":
+        insertQuestionsByCodes(ctQsCodes, qsMap, request.vars, ev_form_id)
+        
+    elif evidence_type == "Case Report":
+        insertQuestionsByCodes(crQsCodes, qsMap, request.vars, ev_form_id)
+
+    elif evidence_type == "Metabolic Experiment":
+        insertQuestionsByCodes(expMbQsCodes, qsMap, request.vars, ev_form_id)
+
+    elif evidence_type == "Transport Experiment":
+        insertQuestionsByCodes(expTsQsCodes, qsMap, request.vars, ev_form_id)
+
+    else:
+        print "[ERROR] evidence type undefined (%s)" % evidence_type
+        
+    printTables()
+
+    # evidence type inference
+    inferred_evidence_type = evidenceTypeInference()
+
+    response.message = "Evidence type questions submit!"
+    response.inferred_evidence_type = inferred_evidence_type
+    # return dict()
+    # return dict(message = "Evidence type questions submit!", inferred_evidence_type = inferred_evidence_type)
+    # return {"message": "Evidence type questions submit!", "inferred_evidence_type": inferred_evidence_type}
 
 
-@cache.action()
-def download():
-    """
-    allows downloading of uploaded files
-    http://..../[app]/default/download/[filename]
-    """
-    return response.download(request, db)
+# insert question and answer to evidence_type_question table
+def insertQuestionsByCodes(codes, qsMap, data, ev_form_id):
+    for code in codes:
+        if code in qsMap:
+            question, answer  = qsMap[code], data[code]
+            
+            if question and answer:
+                db.evidence_type_question.insert(evidence_type_form_id=ev_form_id, question=question, answer=answer)
 
 
-def call():
-    """
-    exposes services. for example:
-    http://..../[app]/default/call/jsonrpc
-    decorate with @services.jsonrpc the functions to expose
-    supports xml, json, xmlrpc, jsonrpc, amfrpc, rss, csv
-    """
-    return service()
+# send sparql query to virtuoso endpoint for specific evidence type inference
+def evidenceTypeInference():
+
+    inferred_evidence_type = "Specific clinical trial"
+    return inferred_evidence_type
+    
+
+
+# truncate all tables in database
+def truncateAllTables():
+
+    db.evidence_type.truncate()
+    db.evidence_type_form.truncate()
+    db.evidence_type_question.truncate()
+
+
+def printTables():
+    
+    print db.executesql('SELECT * FROM evidence_type;')
+    print db.executesql('SELECT * FROM evidence_type_form;')
+    print db.executesql('SELECT * FROM evidence_type_question;')
 
 
