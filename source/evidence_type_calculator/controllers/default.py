@@ -2,86 +2,55 @@
 # this file is released under public domain and you can use without limitations
 
 def index():
-    print '[INFO] controller index...'    
-    response.flash = T("test")    
-    return dict(message = "Evidence type questions", inferred_evidence_type = "")
+    print '[INFO] default controller index...'
+
+    participants = getParticipants()
+    participant_options = []
+    for participant in participants:
+        participant_options.append(OPTION(participant[1], _value=participant[1]))
+
+    form = FORM('Participant: ', SELECT(_name='participant', *participant_options, _value='select', _onchange="ajax('taskCallback', ['participant'], ':eval');"))
+
+    return dict(login_form = form, task_summary_table = "")
 
 
-def evidenceTypeQuestions():
-    
-    print '[INFO] controller evidenceTypeQuestions...'
-    
-    # trucate all data - only for dev/test
-    truncateAllTables()
+def taskCallback():
+    print '[INFO] default task callback...'
+    print request.vars
 
-    qsMap = {"ct-gr": "Group Randomization?", "ct-pgd": "Parallel Group Design?", "ct-pk": "Study Focused on Pharmacokinetic Processes?", "ct-ph": "Phenotyping?", "ct-gt": "Genotyping?", "cr-ae": "Reporting an adverse event?", "cr-pr": "Publically reported?", "cr-ep": "Following an evaluation protocol?", "exp-m-st": "Subtype?", "exp-m-at": "Assay Type?", "exp-m-mi": "Metabolic Inhibitor?", "exp-t-st": "Subtype?", "exp-t-at": "Assay Type?", "exp-t-tp": "Transporter Protein?"}
-    user = "Ivan"
+    part_name = request.vars.participant
+    tasks = getTasksByParticipant(part_name)
 
-    crQsCodes = ["cr-ae", "cr-pr", "cr-ep"]
-    ctQsCodes = ["ct-gr", "ct-pgd", "ct-pk", "ct-ph", "ct-gt"]
-    expMbQsCodes = ["exp-m-st", "exp-m-at", "exp-m-mi"]
-    expTsQsCodes = ["exp-t-st", "exp-t-at", "exp-t-tp"]
+    table = "<table class='table'>"
+    for task in tasks:
+        table += "<tr><td>%s</td><td>%s</td><td>%s</td><td><a href='%s'>%s<a></td></tr>" % (task[1], task[3], task[9], URL('redirectToForm'), task[1])
+    table += "</table>"
 
-    print request.vars    
-    evidence_type = request.vars.evidencetype
-
-    ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=False)    
-    ev_type_id = db.evidence_type.insert(document_id=1, participant=user, method=evidence_type, is_started=True, evidence_type_form_id = ev_form_id)
-
-    if evidence_type == "DDI clinical trial":
-        insertQuestionsByCodes(ctQsCodes, qsMap, request.vars, ev_form_id)
+    r = 'jQuery("#summary_table").html("%s")' % table
+    # print r
+    return r
         
-    elif evidence_type == "Case Report":
-        insertQuestionsByCodes(crQsCodes, qsMap, request.vars, ev_form_id)
-
-    elif evidence_type == "Metabolic Experiment":
-        insertQuestionsByCodes(expMbQsCodes, qsMap, request.vars, ev_form_id)
-
-    elif evidence_type == "Transport Experiment":
-        insertQuestionsByCodes(expTsQsCodes, qsMap, request.vars, ev_form_id)
-
-    else:
-        print "[ERROR] evidence type undefined (%s)" % evidence_type
-        
-    printTables()
-
-    # evidence type inference
-    inferred_evidence_type = evidenceTypeInference()
-    response.view = "default/index.html"
-    print inferred_evidence_type
-    return dict(message = "Evidence type questions submit!", inferred_evidence_type = inferred_evidence_type)
-
-
-# insert question and answer to evidence_type_question table
-def insertQuestionsByCodes(codes, qsMap, data, ev_form_id):
-    for code in codes:
-        if code in qsMap:
-            question, answer  = qsMap[code], data[code]
-            
-            if question and answer:
-                db.evidence_type_question.insert(evidence_type_form_id=ev_form_id, question=question, answer=answer)
-
-
-# send sparql query to virtuoso endpoint for specific evidence type inference
-def evidenceTypeInference():
-
-    inferred_evidence_type = "Specific clinical trial"
-    return inferred_evidence_type
     
 
 
-# truncate all tables in database
-def truncateAllTables():
-
-    db.evidence_type.truncate()
-    db.evidence_type_form.truncate()
-    db.evidence_type_question.truncate()
+def redirectToForm():
+    redirect(URL(request.application, 'forms', 'index'))
 
 
-def printTables():
+def getTasksByParticipant(participant):
+    sql = "SELECT * FROM evidence_type WHERE participant='%s';" % participant
+    print sql
     
-    print db.executesql('SELECT * FROM evidence_type;')
-    print db.executesql('SELECT * FROM evidence_type_form;')
-    print db.executesql('SELECT * FROM evidence_type_question;')
+    tasks = db.executesql(sql)
+
+    # print tasks
+    return tasks
+
+
+def getParticipants():
+    participants = db.executesql("SELECT * FROM participant_task;")
+    return participants
+
+
 
 
