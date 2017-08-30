@@ -1,0 +1,10 @@
+participant,task_id,assist
+select,,
+Yifan,1,True
+Yifan,2,True
+Yifan,3,False
+Yifan,4,True
+Amy,1,True
+Amy,4,True
+Amy,5,False
+Amy,6,True
