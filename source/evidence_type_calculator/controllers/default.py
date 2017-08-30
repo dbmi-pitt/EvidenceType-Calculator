@@ -20,12 +20,13 @@ def taskCallback():
     print request.vars
 
     tasks = getTasksByParticipant(request.vars.participant)
-
     table = "<table class='table'><tr><td>participant</td><td>task</td><td>with assist? (T=Yes, F=No)</td><td>is started</td><td>is finished</td><td>link</td></tr>"
     rows= ""
     
     # get summary table contents if valid participant is selected
     if request.vars.participant and request.vars.participant != "select":
+        session.participant = request.vars.participant
+        
         for task in tasks:
             rows += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td><a href='%s'>%s<a></td></tr>" % (task[0], task[1], task[2], task[3], task[4], URL('redirectToForm'), "task " + str(task[1]))
         

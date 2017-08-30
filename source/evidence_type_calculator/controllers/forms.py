@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 # this file is released under public domain and you can use without limitations
 
+## TODO: change to form submit to ajax callback
 def index():
-    print '[INFO] controller form index...'
+    print '[INFO] form controller index...'
+    print request.vars
+    print session
     
     # trucate all data - only for dev/test
     truncateAllTables()
 
     qsMap = {"ct-gr": "Group Randomization?", "ct-pgd": "Parallel Group Design?", "ct-pk": "Study Focused on Pharmacokinetic Processes?", "ct-ph": "Phenotyping?", "ct-gt": "Genotyping?", "cr-ae": "Reporting an adverse event?", "cr-pr": "Publically reported?", "cr-ep": "Following an evaluation protocol?", "exp-m-st": "Subtype?", "exp-m-at": "Assay Type?", "exp-m-mi": "Metabolic Inhibitor?", "exp-t-st": "Subtype?", "exp-t-at": "Assay Type?", "exp-t-tp": "Transporter Protein?"}
-    user = "Ivan"
 
     crQsCodes = ["cr-ae", "cr-pr", "cr-ep"]
     ctQsCodes = ["ct-gr", "ct-pgd", "ct-pk", "ct-ph", "ct-gt"]
     expMbQsCodes = ["exp-m-st", "exp-m-at", "exp-m-mi"]
     expTsQsCodes = ["exp-t-st", "exp-t-at", "exp-t-tp"]
-
-    print request.vars    
 
     if request.vars:
         evidence_type = request.vars.evidencetype
