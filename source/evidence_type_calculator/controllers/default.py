@@ -9,7 +9,7 @@ def index():
     for participant in participants:
         participant_options.append(OPTION(participant[0], _value=participant[0]))
 
-    form = FORM('Participant: ', SELECT(_name='participant', *participant_options, _value='select', _onchange="ajax('default/taskCallback', ['participant'], ':eval');"))
+    form = FORM('Participant: ', SELECT(_name='participant', *participant_options, _value='select', _onchange="ajax('taskCallback', ['participant'], ':eval');"))
 
     return dict(login_form = form, task_summary_table = "")
 
@@ -28,7 +28,7 @@ def taskCallback():
         session.participant = request.vars.participant
         
         for task in tasks:
-            rows += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td><a href='%s'>%s<a></td></tr>" % (task[0], task[1], task[2], task[3], task[4], URL('redirectToForm'), "task " + str(task[1]))
+            rows += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td><a href='%s'>%s<a></td></tr>" % (task[0], task[1], task[2], task[3], task[4], URL(request.application, 'forms', 'index', vars=dict(task_id=task[1])), "task " + str(task[1]))
         
     table += rows + "</table>"
 
