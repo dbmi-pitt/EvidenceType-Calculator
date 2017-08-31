@@ -10,14 +10,12 @@ def index():
     # trucate all data - only for dev/test
     truncateAllTables()
     
-    return dict(inferred_evidence_type="")
+    return dict()
 
 
 def saveEvidenceTypeQuestions():
     print '[INFO] form controller saveEvidenceTypeQuestions...'
     print request.vars
-
-    qsMap = {"ct-gr": "Group Randomization?", "ct-pgd": "Parallel Group Design?", "ct-pk": "Study Focused on Pharmacokinetic Processes?", "ct-ph": "Phenotyping?", "ct-gt": "Genotyping?", "cr-ae": "Reporting an adverse event?", "cr-pr": "Publically reported?", "cr-ep": "Following an evaluation protocol?", "exp-m-st": "Subtype?", "exp-m-at": "Assay Type?", "exp-m-mi": "Metabolic Inhibitor?", "exp-t-st": "Subtype?", "exp-t-at": "Assay Type?", "exp-t-tp": "Transporter Protein?"}
 
     crQsCodes = ["cr-ae", "cr-pr", "cr-ep"]
     ctQsCodes = ["ct-gr", "ct-pgd", "ct-pk", "ct-ph", "ct-gt"]
@@ -49,11 +47,9 @@ def saveEvidenceTypeQuestions():
         printTables()
 
         # evidence type inference
-        inferred_evidence_type = evidenceTypeInference()
-
-        return dict(message = "Evidence type questions submit!", inferred_evidence_type = inferred_evidence_type, login_form="", task_summary_table="")
-    
-    return dict(inferred_evidence_type="")
+        inferred_evidence_type = getInferredEvType()
+        r = 'jQuery("#inferred-evidencetype").val("%s")' % inferred_evidence_type
+        return r
 
 
 # insert question and answer to evidence_type_question table
@@ -68,12 +64,10 @@ def insertQuestionsByCodes(codes, qsMap, data, ev_form_id):
 
 
 # send sparql query to virtuoso endpoint for specific evidence type inference
-def evidenceTypeInference():
-
-    inferred_evidence_type = "Specific clinical trial"
+def getInferredEvType():
+    inferred_evidence_type = "Demo inferred evidence type"
     return inferred_evidence_type
     
-
 
 # truncate all tables in database
 def truncateAllTables():

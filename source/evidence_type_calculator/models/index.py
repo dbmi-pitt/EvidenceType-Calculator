@@ -1,5 +1,8 @@
 import os, sys
 
+## maps for question code and full question content
+qsMap = {"ct-gr": "Group Randomization?", "ct-pgd": "Parallel Group Design?", "ct-pk": "Study Focused on Pharmacokinetic Processes?", "ct-ph": "Phenotyping?", "ct-gt": "Genotyping?", "cr-ae": "Reporting an adverse event?", "cr-pr": "Publically reported?", "cr-ep": "Following an evaluation protocol?", "exp-m-st": "Subtype?", "exp-m-at": "Assay Type?", "exp-m-mi": "Metabolic Inhibitor?", "exp-t-st": "Subtype?", "exp-t-at": "Assay Type?", "exp-t-tp": "Transporter Protein?"}
+
 db = DAL('sqlite://storage.sqlite', fake_migrate=True)
 
 # evidence type form
@@ -30,5 +33,6 @@ db.participant_task.truncate()
 # assign tasks to participants, based on config in uploads/participant_task.csv
 pathfilename=os.path.join(request.folder,'config/', 'participant_task.csv')
 db.participant_task.import_from_csv_file(open(pathfilename), delimiter=",")
+
 
 

@@ -86,8 +86,9 @@
 		<td style="width:20%"><label class="radio-inline">
 		    <input name="cr-ep" type="radio" ng-model="myVar" value="unsure">Unsure
             </label></td></tr></table>
+	    
+	    <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','cr-ae','cr-pr','cr-ep'], ':eval');">Calculate</button>
 
-	    <!-- <button type="submit" class="btn btn-default" id = "calculateCR">Calculate</button>	     -->
         </div>
 
 	<!-- DDI Clinical trial ########################################### -->
@@ -173,7 +174,9 @@
 		<td style="width:20%"><label class="radio-inline">
 		    <input name="ct-gt" type="radio" ng-model="myVar" value="unsure">Unsure
             </label></td></tr></table>	      
-          <br>	  
+            <br>
+	    <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ct-gr', 'ct-pgd', 'ct-pk', 'ct-ph', 'ct-gt'], ':eval');">Calculate</button>
+	    
         </div>
 
 	<!-- Experiment metabolic ############################################### -->
@@ -273,17 +276,20 @@
             <td style="width:10%"><label class="radio-inline">
             <input name="exp-t-tp" type="radio" ng-model="myVar" value="unsure">Unsure
             </label></td></tr>
-	  </table>
-          
+	  </table>          
           <br>
+	  
         </div>
 
 	<!-- Evidence type -->
 	<br><br>
 	<label for="usr">Specific evidence type:</label>
-	<input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype" value="{{=inferred_evidence_type }}">
-	
-	<button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','cr-ae','cr-pr','cr-ep'], ':eval');")">Calculate</button>
+	<input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype">
+	<!-- Agree or disagree inferred result -->
+	<br>
+	<button type="button" class="btn btn-default" id="agree" onclick="">Agree</button>
+	<button type="button" class="btn btn-default" id="disagree" onclick="">Disagree</button>
+	<!-- ajax('saveEvidenceTypeQuestions', ['evidencetype', ':eval'); -->
 	
 	</form>
     </div>
