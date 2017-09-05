@@ -3,10 +3,11 @@
 
 ## TODO: change to form submit to ajax callback
 def index():
-    print '[INFO] form controller index...'
-    print request.vars
-    print session
-    
+    print "[INFO] form controller index..."
+    task_id = request.vars.task_id
+    part_code = session.participant
+
+    print "participant (%s), task (%s)" % (part_code, task_id)
     # trucate all data - only for dev/test
     truncateAllTables()
     
@@ -25,6 +26,7 @@ def saveEvidenceTypeQuestions():
     if request.vars:
         ev_type = request.vars.evidencetype
         task_id = request.vars.task_id
+        part_code = session.participant
 
         ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=False)
 
@@ -42,13 +44,13 @@ def saveEvidenceTypeQuestions():
         else:
             print "[ERROR] evidence type undefined (%s)" % ev_type
 
-        db.evidence_type.insert(task_id=task_id, participant=session.participant, mp_method=ev_type, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)
+        db.evidence_type.insert(task_id=task_id, participant=part_code, mp_method=ev_type, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)
         
         printTables()
 
         # evidence type inference
         inferred_evidence_type = getInferredEvType()
-        r = 'jQuery("#inferred-evidencetype").val("%s")' % inferred_evidence_type
+        r = '$("#evidence-type-field").css("display","block");jQuery("#inferred-evidencetype").val("%s")' % inferred_evidence_type
         return r
 
 

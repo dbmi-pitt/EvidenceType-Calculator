@@ -15,9 +15,12 @@ def index():
 def getMyTask():
     print '[INFO] summary get my task...'
     part_code = request.vars.participant
+    session.participant = part_code
     task = getNextTaskByParticipant(part_code)
     progress = getProgressForParticipant(part_code)
-    print "[DEBUG] user task progress %s (%s)" % (progress["finished"], progress["total"])
+
+    
+    print "[DEBUG] user (%s) task progress %s (%s)" % (session.participant, progress["finished"], progress["total"])
     
     task_html = "<h5>Current progress: finisehd <span class='label label-default'>%s</span> &nbsp;&nbsp; total <span class='label label-default'>%s</span></h5><br>My next task:<br><br><table class='table'><tr><td>participant</td><td>task</td><td>with assist? (T=Yes, F=No)</td><td>link</td></tr>" % (progress["finished"], progress["total"])
     
