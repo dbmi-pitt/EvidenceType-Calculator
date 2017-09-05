@@ -50,7 +50,7 @@ def saveEvidenceTypeQuestions():
 
         # evidence type inference
         inferred_evidence_type = getInferredEvType()
-        r = '$("#evidence-type-field").css("display","block");jQuery("#inferred-evidencetype").val("%s")' % inferred_evidence_type
+        r = '$("#inferred-evidencetype-div").css("display","block");jQuery("#inferred-evidencetype").val("%s")' % inferred_evidence_type
         return r
 
 

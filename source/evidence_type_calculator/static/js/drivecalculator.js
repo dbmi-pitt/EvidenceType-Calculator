@@ -9,7 +9,8 @@ function hideForms() {
     $("#metabolic").css("display","none");
     $("#transport").css("display","none");
     $("#caseReport").css("display","none");
-    $("#evidence-type-field").css("display","none");
+    $("#inferred-evidencetype-div").css("display","none");
+    $("#entered-evidencetype-div").css("display","none");
     $("#evidencetype-value").attr("value","");
 }
 
@@ -57,6 +58,12 @@ $(document).ready(function(){
 	etStatus = true;
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
     });
+
+
+    $('#ev-type-disagree').on("click", function(e){
+	$("#entered-evidencetype-div").css("display","block");
+    });
+
     
     // $(document).on('click','#calculate', function(){
     // 	doConfirm("The criteria you enter indicates that the evidence type is... is this consistent with your interpretation?",

@@ -283,16 +283,20 @@
 
 	<!-- Evidence type -->
 	<br><br>
-	<div id="evidence-type-field" style='display:none;' id='transport'>
-	  <label for="usr">Specific evidence type:</label>
+	<div id="inferred-evidencetype-div" style='display:none;' id='transport'>
+	  <label for="usr">Inferred evidence type:</label>
 	  <input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype">
-	  <!-- Agree or disagree inferred result -->
+	  <!-- Agree or disagree with inferred result -->
 	  <br>
-	  <button type="button" class="btn btn-default" id="agree" onclick="">Agree</button>
-	  <button type="button" class="btn btn-default" id="disagree" onclick="">Disagree</button>
+	  <button type="button" class="btn btn-default" id="ev-type-agree" onclick="">Agree</button>
+	  <button type="button" class="btn btn-default" id="ev-type-disagree" onclick="">Disagree</button>
 	</div>
-	
-	<!-- ajax('saveEvidenceTypeQuestions', ['evidencetype', ':eval'); -->
+
+	<br><br>
+	<div id="entered-evidencetype-div" style='display:none;' id='transport'>
+	  <label for="usr">Enter evidence type:</label>
+	  <input name="entered-evidencetype" type="text" class="form-control" id="entered-evidencetype">
+	</div>
 	
 	</form>
     </div>
