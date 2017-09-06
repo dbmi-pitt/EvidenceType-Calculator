@@ -281,21 +281,26 @@
 	  
         </div>
 
-	<!-- Evidence type -->
+	<!-- Inferred evidence type -->
 	<br><br>
-	<div id="inferred-evidencetype-div" style='display:none;' id='transport'>
+	<div id="inferred-evidencetype-div" style='display:none;'>
 	  <label for="usr">Inferred evidence type:</label>
 	  <input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype">
-	  <!-- Agree or disagree with inferred result -->
-	  <br>
-	  <button type="button" class="btn btn-default" id="ev-type-agree" onclick="">Agree</button>
+	</div>
+	
+	<!-- Agree or disagree with inferred result -->
+	<br>
+	<div id="agree-with-inferred-div" style='display:none;'>
+	  <button type="button" class="btn btn-default" id="ev-type-agree" onclick="ajax('saveInferred', ['inferred-evidencetype'], ':eval');">Agree</button>
 	  <button type="button" class="btn btn-default" id="ev-type-disagree" onclick="">Disagree</button>
 	</div>
-
-	<br><br>
-	<div id="entered-evidencetype-div" style='display:none;' id='transport'>
+	
+	<!-- Entered evidence type -->
+	<br>
+	<div id="entered-evidencetype-div" style='display:none;'>
 	  <label for="usr">Enter evidence type:</label>
-	  <input name="entered-evidencetype" type="text" class="form-control" id="entered-evidencetype">
+	  <input name="entered-evidencetype" type="text" class="form-control" id="entered-evidencetype"> <br>
+	  <button type="button" class="btn btn-default" id="entered-evidencetype-submit" onclick="ajax('saveEnteredAndInferred', ['entered-evidencetype','inferred-evidencetype'], ':eval');">Submit</button>
 	</div>
 	
 	</form>

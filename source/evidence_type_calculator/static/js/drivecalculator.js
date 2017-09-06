@@ -11,6 +11,7 @@ function hideForms() {
     $("#caseReport").css("display","none");
     $("#inferred-evidencetype-div").css("display","none");
     $("#entered-evidencetype-div").css("display","none");
+    $("#agree-with-inferred-div").css("display","none");
     $("#evidencetype-value").attr("value","");
 }
 

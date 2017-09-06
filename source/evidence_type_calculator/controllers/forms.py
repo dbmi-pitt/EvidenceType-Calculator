@@ -1,21 +1,45 @@
 # -*- coding: utf-8 -*-
 # this file is released under public domain and you can use without limitations
-
-## TODO: change to form submit to ajax callback
 def index():
     print "[INFO] form controller index..."
-    task_id = request.vars.task_id
-    part_code = session.participant
-
-    print "participant (%s), task (%s)" % (part_code, task_id)
-    # trucate all data - only for dev/test
-    truncateAllTables()
+    session.task_id = request.vars.task_id
+    part_code = session.part_code
     
+    print "participant (%s), task (%s)" % (part_code, session.task_id)
+    
+    truncateAllTables() # trucate all data - only for dev/test
     return dict()
 
 
+# save inferred evidence type
+def saveInferred():
+    print '[INFO] form controller save inferred evidence type...'    
+    print request.vars
+    print session
+    
+    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"])
+    
+    r = '$("#agree-with-inferred-div").css("display","none")'
+    return r
+
+
+# save inferred and entered evidence type
+def saveEnteredAndInferred():
+    print '[INFO] form controller save inferred and entered evidence type...'    
+    print request.vars
+    print session
+
+    print db.executesql('SELECT * FROM evidence_type;')
+    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], entered_evidence_type = request.vars["entered-evidencetype"])
+    print db.executesql('SELECT * FROM evidence_type;')
+    
+    r = '$("#agree-with-inferred-div").css("display","none")'
+    return r
+
+    
+# save evidence type questions
 def saveEvidenceTypeQuestions():
-    print '[INFO] form controller saveEvidenceTypeQuestions...'
+    print '[INFO] form controller save evidence type questions...'
     print request.vars
 
     crQsCodes = ["cr-ae", "cr-pr", "cr-ep"]
@@ -25,8 +49,7 @@ def saveEvidenceTypeQuestions():
     
     if request.vars:
         ev_type = request.vars.evidencetype
-        task_id = request.vars.task_id
-        part_code = session.participant
+        part_code = session.part_code
 
         ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=False)
 
@@ -44,13 +67,14 @@ def saveEvidenceTypeQuestions():
         else:
             print "[ERROR] evidence type undefined (%s)" % ev_type
 
-        db.evidence_type.insert(task_id=task_id, participant=part_code, mp_method=ev_type, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)
+        # create evidence_type when assist with inference
+        db.evidence_type.insert(task_id=session.task_id, participant_code=part_code, mp_method=ev_type, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)
         
         printTables()
 
         # evidence type inference
         inferred_evidence_type = getInferredEvType()
-        r = '$("#inferred-evidencetype-div").css("display","block");jQuery("#inferred-evidencetype").val("%s")' % inferred_evidence_type
+        r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s")' % inferred_evidence_type
         return r
 
 
