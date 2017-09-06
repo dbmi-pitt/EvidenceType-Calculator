@@ -41,7 +41,20 @@ def saveEnteredAndInferred():
 
     db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], entered_evidence_type = request.vars["entered-evidencetype"])
     
-    r = '$("#agree-with-inferred-div").css("display","none");'
+    r = '$("#agree-with-inferred-div").css("display","none");' # hide agree/disagree buttons
+    
+    # show following questions
+    if session.mp_method == "Case Report":
+        r+= '$("#cr-ic-questions-div").css("display","block");'
+    elif session.mp_method == "DDI clinical trial":
+        r+= '$("#ct-ic-questions-div").css("display","block");'
+    elif session.mp_method == "Metabolic Experiment":
+        r+= '$("#ex-mt-ic-questions-div").css("display","block");'
+    elif session.mp_method == "Transport Experiment":
+        r+= '$("#ex-tp-ic-questions-div").css("display","block");'
+    else:
+        print "[ERROR] evidence type undefined (%s)" % session.mp_method
+    
     return r
 
     
