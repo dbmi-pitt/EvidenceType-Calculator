@@ -13,27 +13,35 @@ def index():
 
 # save inferred evidence type
 def saveInferred():
-    print '[INFO] form controller save inferred evidence type...'    
-    print request.vars
+    print '[INFO] form controller save inferred evidence type...'
     print session
     
     db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"])
-    
-    r = '$("#agree-with-inferred-div").css("display","none")'
+
+    r = '$("#agree-with-inferred-div").css("display","none");' # hide agree/disagree buttons
+
+    # show following questions
+    if session.mp_method == "Case Report":
+        r+= '$("#cr-ic-questions-div").css("display","block");'
+    elif session.mp_method == "DDI clinical trial":
+        r+= '$("#ct-ic-questions-div").css("display","block");'
+    elif session.mp_method == "Metabolic Experiment":
+        r+= '$("#ex-mt-ic-questions-div").css("display","block");'
+    elif session.mp_method == "Transport Experiment":
+        r+= '$("#ex-tp-ic-questions-div").css("display","block");'
+    else:
+        print "[ERROR] evidence type undefined (%s)" % session.mp_method
+
     return r
 
 
 # save inferred and entered evidence type
 def saveEnteredAndInferred():
     print '[INFO] form controller save inferred and entered evidence type...'    
-    print request.vars
-    print session
 
-    print db.executesql('SELECT * FROM evidence_type;')
     db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], entered_evidence_type = request.vars["entered-evidencetype"])
-    print db.executesql('SELECT * FROM evidence_type;')
     
-    r = '$("#agree-with-inferred-div").css("display","none")'
+    r = '$("#agree-with-inferred-div").css("display","none");'
     return r
 
     
@@ -49,7 +57,7 @@ def saveEvidenceTypeQuestions():
     
     if request.vars:
         ev_type = request.vars.evidencetype
-        part_code = session.part_code
+        session.mp_method = ev_type
 
         ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=False)
 
@@ -68,7 +76,7 @@ def saveEvidenceTypeQuestions():
             print "[ERROR] evidence type undefined (%s)" % ev_type
 
         # create evidence_type when assist with inference
-        db.evidence_type.insert(task_id=session.task_id, participant_code=part_code, mp_method=ev_type, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)
+        db.evidence_type.insert(task_id=session.task_id, participant_code=session.part_code, mp_method=ev_type, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)
         
         printTables()
 

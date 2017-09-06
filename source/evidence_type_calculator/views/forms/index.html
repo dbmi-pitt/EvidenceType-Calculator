@@ -42,265 +42,72 @@
         </div>
         <br>
 
-	<!-- Case report ############################################## -->
-        <div class= "radioform" style='display:none;' id='caseReport'>
-          <h5>Was this evidence type...</h5><br>
-	    <!-- Reporting an adverse event -->
-	    <table style="width:100%">
-              <tr><td style="width:50%"><label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Reporting an adverse event? </label></td> 
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="cr-ae" type="radio" ng-model="myVar" value="yes">Yes
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input  name="cr-ae" type="radio" ng-model="myVar" value="no">No
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input  name="cr-ae" type="radio" ng-model="myVar" value="unsure">Unsure
-              </label></td></tr>
-            </table>
-
-	    <!-- Publically reported -->
-            <table style="width:100%">
-              <tr><td style="width:50%">
-		  <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Publically reported? </label> </td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="cr-pr" type="radio" ng-model="myVar" value="yes">Yes
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="cr-pr" type="radio" ng-model="myVar" value="no">No
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="cr-pr" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr></table>
-
-	    <!-- Following an evaluation protocol -->
-            <table style="width:100%">
-              <tr><td style="width:50%">
-		  <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Following an evaluation protocol? </label> </td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="cr-ep" type="radio" ng-model="myVar" value="yes">Yes
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="cr-ep" type="radio" ng-model="myVar" value="no">No
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="cr-ep" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr></table>
-	    
-	    <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','cr-ae','cr-pr','cr-ep'], ':eval');">Calculate</button>
-
+	<!-- Evidence type questions -->
+	<!-- Case report evidence questions -->
+        <div class= "radioform" style="display:none;" id='caseReport'>
+	  {{include 'forms/cr_ev_questions.html'}}
+	  <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','cr-ae','cr-pr','cr-ep'], ':eval');">Calculate</button>
         </div>
 
-	<!-- DDI Clinical trial ########################################### -->
-	<div class= "radioform" style='display:none;' id='clinicalTrial'>
-          <h5>Does this evidence type include...</h5><br>
-	  
-          <!-- <form name="ct-form" enctype="multipart/form-data" action="{{=URL('clinicalTrialForm')}}" method="post"> -->	    
-	    <!-- CT-DDI Group Randomization radio button -->
-            <table style="width:100%">
-              <tr><td style="width:50%">
-		  <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Group Randomization? </label></td>
-		<td style="width:20%">
-		  <label class="radio-inline">
-		    <input name="ct-gr" type="radio" ng-model="myVar" value="yes">Yes
-		  </label>
-		</td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-gr" type="radio" ng-model="myVar" value="no">No
-		  </label>
-		</td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-gr" type="radio" ng-model="myVar" value="unsure">Unsure
-		  </label>
-		</td>
-	      </tr>
-	    </table> 
-	    
-	    <!-- CT-DDI Parallel Group Design -->
-            <table style="width:100%">
-	      <tr><td style="width:50%">
-		  <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Parallel Group Design? </label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-pgd" type="radio" ng-model="myVar" value="yes">Yes
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-pgd" type="radio" ng-model="myVar" value="no">No
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-pgd" type="radio" ng-model="myVar" value="unsure">Unsure
-              </label></td></tr>
-	    </table>
-	    
-	    <!-- CT-DDI Pharmacokinetic Processes -->
-            <table style="width:100%">
-              <tr><td style="width:50%">
-		  <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Study Focused on Pharmacokinetic Processes? </label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-pk" type="radio" ng-model="myVar" value="yes">Yes
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-pk" type="radio" ng-model="myVar" value="no">No
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-pk" type="radio" ng-model="myVar" value="unsure">Unsure
-		</label></td>
-	    </table>
-
-	    <!-- CT-DDI Phenotyping -->
-            <table style="width:100%">
-              <tr><td style="width:50%">
-		  <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Phenotyping? </label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-ph" type="radio" ng-model="myVar" value="yes">Yes
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-ph" type="radio" ng-model="myVar" value="no">No
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-ph" type="radio" ng-model="myVar" value="unsure">Unsure
-              </label></td></tr>
-	    </table>
-	    
-	    <!-- CT-DDI Genotyping -->
-            <table style="width:100%">
-              <tr><td style="width:50%">
-		  <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Genotyping?</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-gt" type="radio" ng-model="myVar" value="yes">Yes
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-gt" type="radio" ng-model="myVar" value="no">No
-		</label></td>
-		<td style="width:20%"><label class="radio-inline">
-		    <input name="ct-gt" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr></table>	      
-            <br>
-	    <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ct-gr', 'ct-pgd', 'ct-pk', 'ct-ph', 'ct-gt'], ':eval');">Calculate</button>
-	    
+	<!-- DDI Clinical trial evidence questions -->
+	<div class= "radioform" style="display:none;" id='clinicalTrial'>
+	  {{include 'forms/ct_ev_questions.html'}}
+	  <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ct-gr', 'ct-pgd', 'ct-pk', 'ct-ph', 'ct-gt'], ':eval');">Calculate</button>	    
         </div>
 
-	<!-- Experiment metabolic ############################################### -->
-        <div class= "radioform" style='display:none;' id='metabolic'>
-
-	  <!-- metabolic experiment sub type -->
-          <table style="width:100%">
-            <tr><td style="width:50%">
-            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Subtype? </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-m-st" type="radio" ng-model="myVar" value="inhibition">Inhibition
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-m-st" type="radio" ng-model="myVar" value="identification">Identification
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-m-st" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr>
-	  </table>
-
-	  <!-- metabolic experiment assay type -->
-          <table style="width:100%">
-            <tr><td style="width:50%">
-            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-m-at" type="radio" ng-model="myVar" value="humanTissue">Human Tissue
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-m-at" type="radio" ng-model="myVar" value="cellLine">Cell Line
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-m-at" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr>
-	  </table>
-
-	  <!-- metabolic experiment metabolic inhibitor -->
-	  <table style="width:100%">
-            <tr><td style="width:50%">
-            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Metabolic Inhibitor? </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-m-mi" type="radio" ng-model="myVar" value="antibody">Antibody
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-m-mi" type="radio" ng-model="myVar" value="chemical">Chemical
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-m-mi" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr>
-	  </table>
-	  
-          <br>
+	<!-- Experiment metabolic evidence questions -->
+        <div class= "radioform" style="display:none;" id='metabolic'>
+	  {{include 'forms/ex_mt_ev_questions.html'}}
+	  <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ct-gr', 'ct-pgd', 'ct-pk', 'ct-ph', 'ct-gt'], ':eval');">Calculate</button>	  	  
         </div>
 
-	<!-- Experiment transport ############################################### -->
-	<div class= "radioform" style='display:none;' id='transport'>
-          <form>
-          <table style="width:100%">
-            <tr><td style="width:50%">
-            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Subtype? </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-t-st" type="radio" ng-model="myVar" value="inhibition">Inhibition
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-t-st" type="radio" ng-model="myVar" value="identification">Identification
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-t-st" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr>
-	  </table>
-
-          <table style="width:100%">
-            <tr><td style="width:50%">
-            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-t-at" type="radio" ng-model="myVar" value="cacoTwoCellLines">Caco 2 Cell Lines
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-t-at" type="radio" ng-model="myVar" value="overExpressedCellLines">Overexpressed Cell Lines
-            </label></td>
-            <td style="width:20%"><label class="radio-inline">
-            <input name="exp-t-at" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr>
-	  </table>
-
-          <table style="width:100%">
-            <tr><td style="width:40%">
-            <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Transporter Protein? </label></td>
-            <td style="width:10%"><label class="radio-inline">
-            <input name="exp-t-tp" type="radio" ng-model="myVar" value="pGlycoprotein">P-Glycoprotein
-            </label></td>
-            <td style="width:10%"><label class="radio-inline">
-            <input name="exp-t-tp" type="radio" ng-model="myVar" value="oatpOnebOne">OATP1B1
-            </label></td>
-            <td style="width:10%"><label class="radio-inline">
-            <input name="exp-t-tp" type="radio" ng-model="myVar" value="oatpOnebThree">OATP1B3
-            </label></td>
-            <td style="width:10%"><label class="radio-inline">
-            <input name="exp-t-tp" type="radio" ng-model="myVar" value="unsure">Unsure
-            </label></td></tr>
-	  </table>          
-          <br>
-	  
+	<!-- Experiment transport evidence questions -->
+	<div class= "radioform" style="display:none;" id='transport'>
+	  {{include 'forms/ex_tp_ev_questions.html'}}
+	  <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ct-gr', 'ct-pgd', 'ct-pk', 'ct-ph', 'ct-gt'], ':eval');">Calculate</button>	  
         </div>
 
 	<!-- Inferred evidence type -->
 	<br><br>
-	<div id="inferred-evidencetype-div" style='display:none;'>
+	<div id="inferred-evidencetype-div" style="display:none;">
 	  <label for="usr">Inferred evidence type:</label>
 	  <input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype">
 	</div>
 	
 	<!-- Agree or disagree with inferred result -->
 	<br>
-	<div id="agree-with-inferred-div" style='display:none;'>
+	<div id="agree-with-inferred-div" style="display:none;">
 	  <button type="button" class="btn btn-default" id="ev-type-agree" onclick="ajax('saveInferred', ['inferred-evidencetype'], ':eval');">Agree</button>
 	  <button type="button" class="btn btn-default" id="ev-type-disagree" onclick="">Disagree</button>
 	</div>
 	
 	<!-- Entered evidence type -->
 	<br>
-	<div id="entered-evidencetype-div" style='display:none;'>
+	<div id="entered-evidencetype-div" style="display:none;">
 	  <label for="usr">Enter evidence type:</label>
 	  <input name="entered-evidencetype" type="text" class="form-control" id="entered-evidencetype"> <br>
 	  <button type="button" class="btn btn-default" id="entered-evidencetype-submit" onclick="ajax('saveEnteredAndInferred', ['entered-evidencetype','inferred-evidencetype'], ':eval');">Submit</button>
+	</div>
+
+	<!-- Inclusion criteria questions -->	
+	<!-- Case Report -->
+	<div id="cr-ic-questions-div" style="display:none;">
+	  {{include 'forms/cr_ic_questions.html'}}	  
+   	</div>
+
+	<!-- DDI clinical trial -->
+	<div id="ct-ic-questions-div" style="display:none;">
+	  {{include 'forms/ct_ic_questions.html'}}
+	</div>
+
+	<!-- Experiment metabolic -->
+	<div id="ex-mt-ic-questions-div" style="display:none;">
+	  {{include 'forms/ex_mt_ic_questions.html'}}
+	</div>
+
+	<!-- Experiment transport -->
+	<div id="ex-tp-ic-questions-div" style="display:none;">
+	  {{include 'forms/ex_tp_ic_questions.html'}}
 	</div>
 	
 	</form>

@@ -1,22 +1,23 @@
-// var crStatus = false;
-// var ctStatus = false;
-// var emStatus = false;
-// var etStatus = false;
-var method = null
-
 function hideForms() {
     $("#clinicalTrial").css("display","none");
     $("#metabolic").css("display","none");
     $("#transport").css("display","none");
     $("#caseReport").css("display","none");
+    
     $("#inferred-evidencetype-div").css("display","none");
     $("#entered-evidencetype-div").css("display","none");
     $("#agree-with-inferred-div").css("display","none");
     $("#evidencetype-value").attr("value","");
+
+    // hide inclusion criteria questions
+    $("#cr-ic-questions-div").css("display","none");
+    $("#ct-ic-questions-div").css("display","none");
+    $("#ex-mt-ic-questions-div").css("display","none");
+    $("#ex-tp-ic-questions-div").css("display","none");
 }
 
 $(document).ready(function(){
-    
+    // select high level evidence type (mp method) 
     $('.dropdown-menu a.test').on("click", function(e){
 	$(this).next('ul').toggle();
 	e.stopPropagation();
@@ -66,109 +67,4 @@ $(document).ready(function(){
     });
 
     
-    // $(document).on('click','#calculate', function(){
-    // 	doConfirm("The criteria you enter indicates that the evidence type is... is this consistent with your interpretation?",
-    // 		  function yes()
-    // 		  {
-    // 		      // go to inclusion criteria
-    // 		      $("#calculateTwo").css("display","block");
-    // 		      $("#comments").css("display","none");
-    // 		      if (crStatus == true){
-    // 			  $("#caseReportIC").css("display","block");
-    // 		      } else if (ctStatus == true){
-    // 			  $("#clinicalTrialIC").css("display","block");
-    // 		      } else if (emStatus == true){
-    // 			  $("#metabolicIC").css("display","block");
-    // 		      } else if (etStatus == true){
-    // 			  $("#transportIC").css("display","block");
-    // 		      } else {
-    // 			  alert("oh no! We can't find which evidence type you selected to display inclusion criteria.");
-    // 		      }
-		      
-    // 		  }, function no()
-    // 		  {
-    // 		      // go to commenting
-    // 		      $("#comments").css("display","block");
-    // 		      $("#clinicalTrialIC").css("display","none");
-    // 		      $("#metabolicIC").css("display","none");
-    // 		      $("#transportIC").css("display","none");
-    // 		      $("#calculateTwo").css("display","none");
-		      
-    // 		  });
-    // });
-    
-    // $(document).on('click','#continue', function(){
-    // 	// go to inclusion criteria
-    // 	$("#calculateTwo").css("display","block");
-    // 	$("#comments").css("display","none");
-    // 	if (crStatus == true){
-    // 	    $("#caseReportIC").css("display","block");
-    // 	} else if (ctStatus == true){
-    // 	    $("#clinicalTrialIC").css("display","block");
-    // 	} else if (emStatus == true){
-    // 	    $("#metabolicIC").css("display","block");
-    // 	} else if (etStatus == true){
-    // 	    $("#transportIC").css("display","block");
-    // 	} else {
-    // 	    alert("oh no! We can't find which evidence type you selected to display inclusion criteria.");
-    // 	}
-    // });
-    
-    // $(document).on('click','#calculateTwo', function(){
-    // 	//alert("hi");
-    // 	doConfirmTwo("The evidence criterion for this type is sufficient/insufficient because it fails to satisfy the following criterion:A. Is this consistent with your interpretation?", function yes()
-    // 		     {
-    // 			 //DONE!
-    // 			 $("#lastStep").css("display","block");
-    // 			 $("#commentsTwo").css("display","none");
-    // 			},  function no()
-    // 		     {
-    // 			 // go to commenting part 2
-    // 			 $("#commentsTwo").css("display","block");
-    // 			 $("#lastStep").css("display","none");
-    // 		     });
-    // });
-    
-    // $(document).on('click','#complete', function(){
-    // 	// DONE! go to final page
-    // 	$("#comments").css("display","none");
-    // 	$("#commentsTwo").css("display","none");
-    // 	$("#lastStep").css("display","block");
-    // });
-    
-    // $(document).on('click','#goBack', function(){
-    // 	// ??? How do this?
-    // 	$("#comments").css("display","block");
-    // 	$("#commentsTwo").css("display","block");
-    // });
-    
-    // $(document).on('click','#new', function(){
-    // 	// start anew
-    // 	window.location.reload();
-    // });
-    
 });
-
-// function doConfirm(msg, yesFn, noFn){
-//     var confirmBox = $("#confirmBox");
-//     confirmBox.find(".message").text(msg);
-//     confirmBox.find(".yes,.no").unbind().click(function()
-//     {
-//         confirmBox.hide();
-//     });
-//     confirmBox.find(".yes").click(yesFn);
-//     confirmBox.find(".no").click(noFn);
-//     confirmBox.show();
-// }
-
-// function doConfirmTwo(msg, yesFn, noFn){
-//     var confirmBoxTwo = $("#confirmBoxTwo");
-//     confirmBoxTwo.find(".message").text(msg);
-//     confirmBoxTwo.find(".yes,.no").unbind().click(function()
-//     {
-//         confirmBoxTwo.hide();
-//     });
-//     confirmBoxTwo.find(".yes").click(yesFn);
-//     confirmBoxTwo.find(".no").click(noFn);
-//     confirmBoxTwo.show();
-// }
