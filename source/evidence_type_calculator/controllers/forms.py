@@ -75,16 +75,16 @@ def saveEvidenceTypeQuestions():
         ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=False)
 
         if ev_type == "DDI clinical trial":
-            insertQuestionsByCodes(ctQsCodes, qsMap, request.vars, ev_form_id)
+            insertEvQuestionsByCodes(ctQsCodes, request.vars, ev_form_id)
         
         elif ev_type == "Case Report":
-            insertQuestionsByCodes(crQsCodes, qsMap, request.vars, ev_form_id)
+            insertEvQuestionsByCodes(crQsCodes, request.vars, ev_form_id)
 
         elif ev_type == "Metabolic Experiment":
-            insertQuestionsByCodes(expMbQsCodes, qsMap, request.vars, ev_form_id)
+            insertEvQuestionsByCodes(expMbQsCodes, request.vars, ev_form_id)
 
         elif ev_type == "Transport Experiment":
-            insertQuestionsByCodes(expTsQsCodes, qsMap, request.vars, ev_form_id)
+            insertEvQuestionsByCodes(expTsQsCodes, request.vars, ev_form_id)
         else:
             print "[ERROR] evidence type undefined (%s)" % ev_type
 
@@ -100,14 +100,23 @@ def saveEvidenceTypeQuestions():
 
 
 # insert question and answer to evidence_type_question table
-def insertQuestionsByCodes(codes, qsMap, data, ev_form_id):
-    for code in codes:
-        if code in qsMap:
-            question, answer  = qsMap[code], data[code]
+def insertEvQuestionsByCodes(ui_codes, data, ev_form_id):
+    for code in ui_codes:
+        if code in global_ev_qs_map:
+            question, answer  = global_ev_qs_map[code], data[code]
             
             if question and answer:
-                print ev_form_id, question, answer
                 db.evidence_type_question.insert(evidence_type_form_id=ev_form_id, question=question, answer=answer)
+
+# insert question and answer to icl_question table
+def insertIcQuestionsByCodes(ui_codes, data, ic_form_id):
+    for code in ui_codes:
+        if code in global_ev_qs_map:
+            question, answer  = global_ev_qs_map[code], data[code]
+            
+            if question and answer:
+                print ic_form_id, question, answer
+                db.icl_question.insert(icl_type_form_id=ic_form_id, question=question, answer=answer)    
 
 
 # send sparql query to virtuoso endpoint for specific evidence type inference
