@@ -1,20 +1,22 @@
 print "[INFO] forms model init..."
 
-# maps for question ui-code and full question content
-global_ev_qs_map = {"ct-gr": "Group Randomization?", "ct-pgd": "Parallel Group Design?",
-                    "ct-pk": "Study Focused on Pharmacokinetic Processes?",
-                    "ct-ph": "Phenotyping?",
-                    "ct-gt": "Genotyping?",
-                    "cr-ae": "Reporting an adverse event?",
-                    "cr-pr": "Publically reported?",
-                    "cr-ep": "Icl an evaluation protocol?",
-                    "exp-m-st": "Subtype?",
-                    "exp-m-at": "Assay Type?",
-                    "exp-m-mi": "Metabolic Inhibitor?",
-                    "exp-t-st": "Subtype?",
-                    "exp-t-at": "Assay Type?",
-                    "exp-t-tp": "Transporter Protein?"}
+# map for evidence type question ui-code and full question content
+global_ev_qs_map = {"ct-ev-question-1": "Group Randomization?",
+                    "ct-ev-question-2": "Parallel Group Design?",
+                    "ct-ev-question-3": "Study Focused on Pharmacokinetic Processes?",
+                    "ct-ev-question-4": "Phenotyping?",
+                    "ct-ev-question-5": "Genotyping?",
+                    "cr-ev-question-1": "Reporting an adverse event?",
+                    "cr-ev-question-2": "Publically reported?",
+                    "cr-ev-question-3": "Icl an evaluation protocol?",
+                    "ex-ev-mt-question-1": "Subtype?",
+                    "ex-ev-mt-question-2": "Assay Type?",
+                    "ex-ev-mt-question-3": "Metabolic Inhibitor?",
+                    "ex-tp-ev-question-1": "Subtype?",
+                    "ex-tp-ev-question-2": "Assay Type?",
+                    "ex-tp-ev-question-3": "Transporter Protein?"}
 
+# map for inclusion criteria question ui-code and full question content
 global_ic_qs_map = {"cr-ic-question-1": "Previous Credible Reports in Humans?",
                     "cr-ic-question-2": "Interaction Consistent with Known Interactive Qualities of the Precipitant Drug?",
                     "cr-ic-question-3": "Interaction Consistent with Known Interactive Qualities of the Object Drug?",
@@ -38,3 +40,15 @@ global_ic_qs_map = {"cr-ic-question-1": "Previous Credible Reports in Humans?",
                     "ex-tp-ic-question-2": "In Vitro Inhibitor:",
                     "ex-tp-ic-question-3": "Cell Line for P-Glycoprotein:",
                     "ex-tp-ic-question-4": "Appropriate Controls:"}
+
+# list of evidence type question ui-element codes based on different high level evidence type
+global_cr_ev_qs_codes = ["cr-ev-question-1", "cr-ev-question-2", "cr-ev-question-3" ]
+global_ct_ev_qs_codes = ["ct-ev-question-1", "ct-ev-question-2", "ct-ev-question-3", "ct-ev-question-4", "ct-ev-question-5"]
+global_ex_mt_ev_qs_codes = ["ex-ev-mt-question-1", "ex-ev-mt-question-2", "ex-ev-mt-question-3"]
+global_ex_tp_ev_qs_codes = ["ex-ev-tp-question-1", "ex-ev-tp-question-2", "ex-ev-tp-question-3"]
+
+# list of inclusion criteria question ui-element codes based on different high level evidence type 
+global_cr_ic_qs_codes = ["cr-ic-question-1", "cr-ic-question-2", "cr-ic-question-3", "cr-ic-question-4", "cr-ic-question-5", "cr-ic-question-6", "cr-ic-question-7", "cr-ic-question-8", "cr-ic-question-9", "cr-ic-question-10"]
+global_ct_ic_qs_codes = ["ct-ic-question-1", "ct-ic-question-2", "ct-ic-question-3", "ct-ic-question-4", "ct-ic-question-5"]
+global_ex_mt_ic_qs_codes = ["ex-mt-ic-question-1", "ex-mt-ic-question-2", "ex-mt-ic-question-3", "ex-mt-ic-question-4"]
+global_ex_tp_ic_qs_codes = ["ex-tp-ic-question-1", "ex-tp-ic-question-2", "ex-tp-ic-question-3", "ex-tp-ic-question-4"]

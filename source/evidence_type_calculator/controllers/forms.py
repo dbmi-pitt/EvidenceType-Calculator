@@ -56,40 +56,21 @@ def saveEnteredAndInferred():
         print "[ERROR] evidence type undefined (%s)" % session.mp_method
     
     return r
-
+        
     
-# save evidence type questions
+## save evidence type questions to table evidence_type_form, evidence_type_question
 def saveEvidenceTypeQuestions():
     print '[INFO] form controller save evidence type questions...'
     print request.vars
-
-    crQsCodes = ["cr-ae", "cr-pr", "cr-ep"]
-    ctQsCodes = ["ct-gr", "ct-pgd", "ct-pk", "ct-ph", "ct-gt"]
-    expMbQsCodes = ["exp-m-st", "exp-m-at", "exp-m-mi"]
-    expTsQsCodes = ["exp-t-st", "exp-t-at", "exp-t-tp"]
     
     if request.vars:
-        ev_type = request.vars.evidencetype
-        session.mp_method = ev_type
+        session.mp_method = request.vars.evidencetype
 
         ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=False)
-
-        if ev_type == "DDI clinical trial":
-            insertEvQuestionsByCodes(ctQsCodes, request.vars, ev_form_id)
-        
-        elif ev_type == "Case Report":
-            insertEvQuestionsByCodes(crQsCodes, request.vars, ev_form_id)
-
-        elif ev_type == "Metabolic Experiment":
-            insertEvQuestionsByCodes(expMbQsCodes, request.vars, ev_form_id)
-
-        elif ev_type == "Transport Experiment":
-            insertEvQuestionsByCodes(expTsQsCodes, request.vars, ev_form_id)
-        else:
-            print "[ERROR] evidence type undefined (%s)" % ev_type
+        saveEvidenceTypeQuestionsHelper(session.mp_method, request.vars, ev_form_id)
 
         # create evidence_type when assist with inference
-        db.evidence_type.insert(task_id=session.task_id, participant_code=session.part_code, mp_method=ev_type, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)
+        db.evidence_type.insert(task_id=session.task_id, participant_code=session.part_code, mp_method=session.mp_method, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)
         
         printTables()
 
@@ -97,6 +78,19 @@ def saveEvidenceTypeQuestions():
         inferred_evidence_type = getInferredEvType()
         r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s")' % inferred_evidence_type
         return r
+
+    
+def saveEvidenceTypeQuestionsHelper(mp_method, data, ev_form_id):
+    if mp_method == "DDI clinical trial":
+        insertEvQuestionsByCodes(global_ct_ev_qs_codes, data, ev_form_id)        
+    elif mp_method == "Case Report":
+        insertEvQuestionsByCodes(global_cr_ev_qs_codes, data, ev_form_id)        
+    elif mp_method == "Metabolic Experiment":
+        insertEvQuestionsByCodes(global_ex_mt_ev_qs_codes, data, ev_form_id)        
+    elif mp_method == "Transport Experiment":
+        insertEvQuestionsByCodes(global_ex_tp_ev_qs_codes, data, ev_form_id)
+    else:
+        print "[ERROR] evidence type undefined (%s)" % mp_method
 
 
 # insert question and answer to evidence_type_question table
@@ -108,6 +102,34 @@ def insertEvQuestionsByCodes(ui_codes, data, ev_form_id):
             if question and answer:
                 db.evidence_type_question.insert(evidence_type_form_id=ev_form_id, question=question, answer=answer)
 
+
+## save inclusion criteria questions to table icl_form, icl_question
+def saveInclusionCriteriaQuestions():
+    print '[INFO] form controller save inclusion criteria questions...'
+    print request.vars
+    session.mp_method = request.vars.evidencetype
+
+    ic_form_id = db.icl_form.insert(is_started=True, is_finished=False)
+    saveInclusionCriteriaQuestionsHelper(session.mp_method, request.vars, ic_form_id)
+    
+    print db.executesql('SELECT * FROM icl_form;')
+    print db.executesql('SELECT * FROM icl_question;')
+    
+
+
+def saveInclusionCriteriaQuestionsHelper(mp_method, data, ic_form_id):
+    if mp_method == "DDI clinical trial":
+        insertIcQuestionsByCodes(global_ct_ic_qs_codes, data, ic_form_id)        
+    elif mp_method == "Case Report":
+        insertIcQuestionsByCodes(global_cr_ic_qs_codes, data, ic_form_id)        
+    elif mp_method == "Metabolic Experiment":
+        insertIcQuestionsByCodes(global_ex_mt_ic_qs_codes, data, ic_form_id)        
+    elif mp_method == "Transport Experiment":
+        insertIcQuestionsByCodes(global_ex_tp_ic_qs_codes, data, ic_form_id)
+    else:
+        print "[ERROR] evidence type undefined (%s)" % mp_method
+    
+                
 # insert question and answer to icl_question table
 def insertIcQuestionsByCodes(ui_codes, data, ic_form_id):
     for code in ui_codes:

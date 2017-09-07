@@ -6,15 +6,15 @@
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Group Randomization? </label></td>
     <td style="width:20%">
       <label class="radio-inline">
-	<input name="ct-gr" type="radio" ng-model="myVar" value="yes">Yes
+	<input name="ct-ev-question-1" type="radio" ng-model="myVar" value="yes">Yes
       </label>
     </td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-gr" type="radio" ng-model="myVar" value="no">No
+	<input name="ct-ev-question-1" type="radio" ng-model="myVar" value="no">No
 		  </label>
     </td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-gr" type="radio" ng-model="myVar" value="unsure">Unsure
+	<input name="ct-ev-question-1" type="radio" ng-model="myVar" value="unsure">Unsure
       </label>
     </td>
   </tr>
@@ -23,51 +23,53 @@
   <tr><td style="width:50%">
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Parallel Group Design? </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-pgd" type="radio" ng-model="myVar" value="yes">Yes
+	<input name="ct-ev-question-2" type="radio" ng-model="myVar" value="yes">Yes
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-pgd" type="radio" ng-model="myVar" value="no">No
+	<input name="ct-ev-question-2" type="radio" ng-model="myVar" value="no">No
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-pgd" type="radio" ng-model="myVar" value="unsure">Unsure
+	<input name="ct-ev-question-2" type="radio" ng-model="myVar" value="unsure">Unsure
   </label></td></tr>
 
   <!-- CT-DDI Pharmacokinetic Processes -->
   <tr><td style="width:50%">
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Study Focused on Pharmacokinetic Processes? </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-pk" type="radio" ng-model="myVar" value="yes">Yes
+	<input name="ct-ev-question-3" type="radio" ng-model="myVar" value="yes">Yes
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-pk" type="radio" ng-model="myVar" value="no">No
+	<input name="ct-ev-question-3" type="radio" ng-model="myVar" value="no">No
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-pk" type="radio" ng-model="myVar" value="unsure">Unsure
+	<input name="ct-ev-question-3" type="radio" ng-model="myVar" value="unsure">Unsure
     </label></td>
 
     <!-- CT-DDI Phenotyping -->
   <tr><td style="width:50%">
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Phenotyping? </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-ph" type="radio" ng-model="myVar" value="yes">Yes
+	<input name="ct-ev-question-4" type="radio" ng-model="myVar" value="yes">Yes
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-ph" type="radio" ng-model="myVar" value="no">No
+	<input name="ct-ev-question-4" type="radio" ng-model="myVar" value="no">No
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-ph" type="radio" ng-model="myVar" value="unsure">Unsure
+	<input name="ct-ev-question-4" type="radio" ng-model="myVar" value="unsure">Unsure
   </label></td></tr>
 
   <!-- CT-DDI Genotyping -->
   <tr><td style="width:50%">
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Genotyping?</label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-gt" type="radio" ng-model="myVar" value="yes">Yes
+	<input name="ct-ev-question-5" type="radio" ng-model="myVar" value="yes">Yes
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-gt" type="radio" ng-model="myVar" value="no">No
+	<input name="ct-ev-question-5" type="radio" ng-model="myVar" value="no">No
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-	<input name="ct-gt" type="radio" ng-model="myVar" value="unsure">Unsure
+	<input name="ct-ev-question-5" type="radio" ng-model="myVar" value="unsure">Unsure
   </label></td></tr>
-</table>	      
+</table>
+
+<button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ct-ev-question-1', 'ct-ev-question-2', 'ct-ev-question-3', 'ct-ev-question-4', 'ct-ev-question-5'], ':eval');">Calculate</button>

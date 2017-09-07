@@ -4,13 +4,13 @@
   <tr><td style="width:50%">
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Subtype? </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="exp-m-st" type="radio" ng-model="myVar" value="inhibition">Inhibition
+        <input name="ex-ev-mt-question-1" type="radio" ng-model="myVar" value="inhibition">Inhibition
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="exp-m-st" type="radio" ng-model="myVar" value="identification">Identification
+        <input name="ex-ev-mt-question-1" type="radio" ng-model="myVar" value="identification">Identification
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="exp-m-st" type="radio" ng-model="myVar" value="unsure">Unsure
+        <input name="ex-ev-mt-question-1" type="radio" ng-model="myVar" value="unsure">Unsure
   </label></td></tr>
 
 
@@ -18,25 +18,27 @@
   <tr><td style="width:50%">
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="exp-m-at" type="radio" ng-model="myVar" value="humanTissue">Human Tissue
+        <input name="ex-ev-mt-question-2" type="radio" ng-model="myVar" value="humanTissue">Human Tissue
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="exp-m-at" type="radio" ng-model="myVar" value="cellLine">Cell Line
+        <input name="ex-ev-mt-question-2" type="radio" ng-model="myVar" value="cellLine">Cell Line
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="exp-m-at" type="radio" ng-model="myVar" value="unsure">Unsure
+        <input name="ex-ev-mt-question-2" type="radio" ng-model="myVar" value="unsure">Unsure
   </label></td></tr>
 
   <!-- metabolic experiment metabolic inhibitor -->  
   <tr><td style="width:50%">
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Metabolic Inhibitor? </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="exp-m-mi" type="radio" ng-model="myVar" value="antibody">Antibody
+        <input name="ex-ev-mt-question-3" type="radio" ng-model="myVar" value="antibody">Antibody
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="exp-m-mi" type="radio" ng-model="myVar" value="chemical">Chemical
+        <input name="ex-ev-mt-question-3" type="radio" ng-model="myVar" value="chemical">Chemical
     </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="exp-m-mi" type="radio" ng-model="myVar" value="unsure">Unsure
+        <input name="ex-ev-mt-question-3" type="radio" ng-model="myVar" value="unsure">Unsure
   </label></td></tr>
 </table>
+
+<button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ex-ev-mt-question-1', 'ex-ev-mt-question-2', 'ex-ev-mt-question-3'], ':eval');">Calculate</button>

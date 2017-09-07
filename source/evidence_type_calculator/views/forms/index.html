@@ -46,25 +46,21 @@
 	<!-- Case report evidence questions -->
         <div class= "radioform" style="display:none;" id='caseReport'>
 	  {{include 'forms/cr_ev_questions.html'}}
-	  <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','cr-ae','cr-pr','cr-ep'], ':eval');">Calculate</button>
         </div>
 
 	<!-- DDI Clinical trial evidence questions -->
 	<div class= "radioform" style="display:none;" id='clinicalTrial'>
-	  {{include 'forms/ct_ev_questions.html'}}
-	  <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ct-gr', 'ct-pgd', 'ct-pk', 'ct-ph', 'ct-gt'], ':eval');">Calculate</button>	    
+	  {{include 'forms/ct_ev_questions.html'}}	    
         </div>
 
 	<!-- Experiment metabolic evidence questions -->
         <div class= "radioform" style="display:none;" id='metabolic'>
-	  {{include 'forms/ex_mt_ev_questions.html'}}
-	  <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','exp-m-st', 'exp-m-at', 'exp-m-mi'], ':eval');">Calculate</button>	  	  
+	  {{include 'forms/ex_mt_ev_questions.html'}}	  	  
         </div>
 
 	<!-- Experiment transport evidence questions -->
 	<div class= "radioform" style="display:none;" id='transport'>
-	  {{include 'forms/ex_tp_ev_questions.html'}}
-	  <button type="button" class="btn btn-default" id="calculate" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','exp-t-st', 'exp-t-at', 'exp-t-tp'], ':eval');">Calculate</button>	  
+	  {{include 'forms/ex_tp_ev_questions.html'}}  
         </div>
 
 	<!-- Inferred evidence type -->
