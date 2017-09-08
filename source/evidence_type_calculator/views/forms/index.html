@@ -105,6 +105,20 @@
 	<div id="ex-tp-ic-questions-div" style="display:none;">
 	  {{include 'forms/ex_tp_ic_questions.html'}}
 	</div>
+
+	<!-- Inclusion criteria result -->
+	<br><br>
+	<div id="ic-div" style="display:none;">
+	  <label for="usr">Meet inclusion criteria? </label>
+	  <input name="ic-result" type="text" class="form-control" id="ic-result">
+	</div>
+	
+	<!-- Agree or disagree with inclusion criteria result -->
+	<br>
+	<div id="agree-with-ic-div" style="display:none;">
+	  <button type="button" class="btn btn-default" id="ic-agree" onclick="ajax('', [''], ':eval');">Agree</button>
+	  <button type="button" class="btn btn-default" id="ic-disagree" onclick="">Disagree</button>
+	</div>
 	
 	</form>
     </div>

@@ -1,4 +1,5 @@
 function hideForms() {
+    // hide evidence type questions
     $("#clinicalTrial").css("display","none");
     $("#metabolic").css("display","none");
     $("#transport").css("display","none");
@@ -14,6 +15,9 @@ function hideForms() {
     $("#ct-ic-questions-div").css("display","none");
     $("#ex-mt-ic-questions-div").css("display","none");
     $("#ex-tp-ic-questions-div").css("display","none");
+
+    $("#ic-div").css("display","none");
+    $("#agree-with-ic-div").css("display","none");
 }
 
 $(document).ready(function(){
