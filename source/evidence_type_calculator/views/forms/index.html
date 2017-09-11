@@ -116,8 +116,14 @@
 	<!-- Agree or disagree with inclusion criteria result -->
 	<br>
 	<div id="agree-with-ic-div" style="display:none;">
-	  <button type="button" class="btn btn-default" id="ic-agree" onclick="ajax('', [''], ':eval');">Agree</button>
-	  <button type="button" class="btn btn-default" id="ic-disagree" onclick="">Disagree</button>
+	  <button type="button" class="btn btn-default" id="ic-agree" onclick="ajax('agreeInclusionCriteria');">Agree</button>
+	  <button type="button" class="btn btn-default" id="ic-disagree" onclick="ajax('disagreeInclusionCriteria');">Disagree</button>
+	</div>
+
+	<div id="ic-comment-div" style="display:none;">
+	  <label for="usr">Comment: </label>
+	  <input name="ic-comment" type="text" class="form-control" id="ic-comment">
+	  <button type="button" class="btn btn-default" id="finish-task" onclick="ajax('finishTask', ['ic-comment'], ':eval');">Finish</button>
 	</div>
 	
 	</form>

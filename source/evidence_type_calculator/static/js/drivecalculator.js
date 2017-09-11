@@ -18,6 +18,7 @@ function hideForms() {
 
     $("#ic-div").css("display","none");
     $("#agree-with-ic-div").css("display","none");
+    $("#ic-comment-div").css("display","none");
 }
 
 $(document).ready(function(){
@@ -70,5 +71,14 @@ $(document).ready(function(){
 	$("#entered-evidencetype-div").css("display","block");
     });
 
+    $('#ic-agree').on("click", function(e){
+	$("#ic-comment-div").css("display","block");
+	$("#agree-with-ic-div").css("display","none");
+    });
+
+    $('#ic-disagree').on("click", function(e){
+	$("#ic-comment-div").css("display","block");
+	$("#agree-with-ic-div").css("display","none");
+    });
     
 });

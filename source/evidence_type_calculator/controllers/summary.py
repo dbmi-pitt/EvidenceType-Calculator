@@ -3,7 +3,7 @@ def index():
     print '[INFO] summary controller index...'
     
     # truncate all data - only for dev/test
-    truncateAllTables()
+    # truncateAllTables()
     
     participants = getParticipants()
     
@@ -18,15 +18,16 @@ def index():
 
 def getMyTask():
     print '[INFO] summary get my task...'
-    print request.vars    
-    session.part_code = request.vars.participant
+    print request.vars
+    if request.vars.participant:
+        session.part_code = request.vars.participant        
 
     task = getNextTaskByParticipant(session.part_code)
     progress = getProgressForParticipant(session.part_code)
     
     print "[DEBUG] user (%s) task progress %s (%s)" % (session.part_code, progress["finished"], progress["total"])
     
-    task_html = "<h5>Current progress: finisehd <span class='label label-default'>%s</span> &nbsp;&nbsp; total <span class='label label-default'>%s</span></h5><br>My next task:<br><br><table class='table'><tr><td>participant</td><td>task</td><td>with assist? (T=Yes, F=No)</td><td>link</td></tr>" % (progress["finished"], progress["total"])
+    task_html = "<h5>Current progress: finished <span class='label label-default'>%s</span> &nbsp;&nbsp; total <span class='label label-default'>%s</span></h5><br>My next task:<br><br><table class='table'><tr><td>participant</td><td>task</td><td>with assist? (T=Yes, F=No)</td><td>link</td></tr>" % (progress["finished"], progress["total"])
     
     task_html += "<tr><td>%s</td><td>%s</td><td>%s</td><td><a href='%s'>%s<a></td></tr></table>" % (task["part_code"], task["task_id"], task["assist"], URL(request.application, 'forms', 'index', vars=dict(task_id=task["task_id"])), "task " + str(task["task_id"]))
     
@@ -37,14 +38,14 @@ def getMyTask():
 # get next task for the participant
 # return task (participant_code, task_id, is assist)
 def getNextTaskByParticipant(part_code):
-    sql = "SELECT p.participant, p.code, p.task_id, p.assist, e.is_started FROM participant_task p LEFT JOIN evidence_type e ON p.code=e.participant_code AND p.task_id = e.task_id WHERE p.code='%s' AND e.is_finished isnull ORDER BY p.task_id LIMIT 1;" % (part_code)
-    print "[DEBUG] get tasks by participant: " + sql
+    sql = "SELECT p.participant, p.code, p.task_id, p.assist, e.is_started FROM participant_task p LEFT JOIN evidence_type e ON p.code=e.participant_code AND p.task_id = e.task_id WHERE p.code='%s' AND (e.is_finished isnull OR e.is_finished = 'F') ORDER BY p.task_id LIMIT 1;" % (part_code)
     
     result = db.executesql(sql)
     if not result:
         return None    
     task = result[0]
 
+    # print "[DEBUG] next task for participant (%s) is task_id (%s)" % (part_code, task[2])
     return {"part_code": task[1], "task_id": task[2], "assist": task[3]}
 
 
@@ -58,7 +59,7 @@ def getProgressForParticipant(part_code):
 
 # get count of finished tasks for the participant
 def getFinshedCntForParticipant(part_code):
-    sql = "SELECT count(*) FROM participant_task p LEFT JOIN evidence_type e ON p.code=e.participant_code AND p.task_id = e.task_id WHERE p.code='%s' AND e.is_finished notnull;" % (part_code)
+    sql = "SELECT count(*) FROM participant_task p LEFT JOIN evidence_type e ON p.code=e.participant_code AND p.task_id = e.task_id WHERE p.code='%s' AND e.is_finished = 'T';" % (part_code)
     return db.executesql(sql)[0]
 
 

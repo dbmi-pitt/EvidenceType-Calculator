@@ -3,12 +3,23 @@
 def index():
     print "[INFO] form controller index..."
     session.task_id = request.vars.task_id
-    part_code = session.part_code
+    if not session.task_id or not session.part_code:
+        print "[ERROR] participant code (%s) or task_id (%s) undefined!" % (session.part_code, session.task_id)
+        return
+    else:
+        print "participant (%s), task (%s)" % (session.part_code, session.task_id)    
+
+    # check if there is finished evidence type form or inclusion criteria form available to load 
+    sql = "SELECT evf.id, icf.id FROM evidence_type e LEFT JOIN evidence_type_form evf ON e.evidence_type_form_id = evf.id LEFT JOIN icl_form icf ON e.icl_form_id = icf.id WHERE e.participant_code = '%s' AND e.task_id = '%s';" % (session.part_code, session.task_id)
+    form_status_res = db.executesql(sql)
     
-    print "participant (%s), task (%s)" % (part_code, session.task_id)
+    print form_status_res
+    if form_status_res:        
+        ev_form_id, ic_form_id = form_status_res[0][0], form_status_res[0][1]
+        print ev_form_id, ic_form_id
     
     return dict()
-        
+
     
 ## save evidence type questions to table evidence_type_form, evidence_type_question
 def saveEvidenceTypeQuestions():
@@ -19,6 +30,7 @@ def saveEvidenceTypeQuestions():
         session.mp_method = request.vars.evidencetype
 
         ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=False)
+        session.ev_form_id = ev_form_id
         saveEvidenceTypeQuestionsHelper(session.mp_method, request.vars, ev_form_id)
 
         # create evidence_type when assist with inference
@@ -107,6 +119,8 @@ def saveInclusionCriteriaQuestions():
     session.mp_method = request.vars.evidencetype
 
     ic_form_id = db.icl_form.insert(is_started=True, is_finished=False)
+    session.ic_form_id = ic_form_id
+    
     saveInclusionCriteriaQuestionsHelper(session.mp_method, request.vars, ic_form_id)
     
     db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(icl_form_id = ic_form_id)
@@ -117,7 +131,7 @@ def saveInclusionCriteriaQuestions():
     if ic_result:
         ic_result_str = "Yes"
         
-    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(is_meet_inclusion_criteria = is_result)        
+    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(is_meet_inclusion_criteria = ic_result)
     
     r = '$("#ic-div").css("display","block");$("#agree-with-ic-div").css("display","block");jQuery("#ic-result").val("%s");$("#calculate").hide();' % ic_result_str
     return r
@@ -153,12 +167,29 @@ def getInferredEvType():
 
 def getInclusionCriteriaResult():
     return True
+
+
+def agreeInclusionCriteria():
+    print '[INFO] form controller agree inclusion criteria...'
+    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(is_agree_with_ic_result = True)
+
+
+def disagreeInclusionCriteria():
+    print '[INFO] form controller disagree inclusion criteria...'
+    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(is_agree_with_ic_result = False)
+
+
+# finished current task, redirect to summary page, mark the finished status
+def finishTask():
+    print '[INFO] form controller finish task...'
+    db(db.icl_form.id == session.ic_form_id).update(is_finished = True)
     
+    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(is_finished = True, disagree_comment = request.vars["ic-comment"])
 
-def printTables():
-    # print db.executesql('SELECT * FROM participant_task;')    
-    print db.executesql('SELECT * FROM evidence_type;')
-    print db.executesql('SELECT * FROM evidence_type_form;')
-    print db.executesql('SELECT * FROM evidence_type_question;')
-
+    session.mp_method = None
+    session.task_id = None
+    session.ic_form_id = None
+    
+    redirect(URL(request.application, 'summary','index'), client_side=True)
+    
 
