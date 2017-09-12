@@ -29,12 +29,12 @@ def saveEvidenceTypeQuestions():
     if request.vars:
         session.mp_method = request.vars.evidencetype
 
-        ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=False)
+        ev_form_id = db.evidence_type_form.insert(is_started=True, is_finished=True)
         session.ev_form_id = ev_form_id
         saveEvidenceTypeQuestionsHelper(session.mp_method, request.vars, ev_form_id)
 
         # create evidence_type when assist with inference
-        db.evidence_type.insert(task_id=session.task_id, participant_code=session.part_code, mp_method=session.mp_method, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)    
+        db.evidence_type.insert(task_id=session.task_id, participant_code=session.part_code, mp_method=session.mp_method, evidence_type_form_id=ev_form_id, is_started=True, is_finished=False)
 
         # evidence type inference
         inferred_evidence_type = getInferredEvType()
@@ -62,15 +62,16 @@ def insertEvQuestionsByCodes(ui_codes, data, ev_form_id):
             question, answer  = global_ev_qs_map[code], data[code]
             
             if question and answer:
-                db.evidence_type_question.insert(evidence_type_form_id=ev_form_id, question=question, answer=answer)
+                db.evidence_type_question.insert(evidence_type_form_id=ev_form_id, ui_code=code, question=question, answer=answer)
 
                 
-# save inferred evidence type and show inclusion criteria questions
-def saveInferred():
+# save inferred evidence type
+# show inclusion criteria questions
+def agreeInferred():
     print '[INFO] form controller save inferred evidence type...'
     print session
     
-    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"])
+    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], is_agree_with_inference = True)
 
     r = '$("#agree-with-inferred-div").css("display","none");' # hide agree/disagree buttons
 
@@ -89,11 +90,12 @@ def saveInferred():
     return r
 
 
-# save inferred and entered evidence type, show inclusion criteria questions
+# save inferred and entered evidence type
+# show inclusion criteria questions
 def saveEnteredAndInferred():
     print '[INFO] form controller save inferred and entered evidence type...'    
 
-    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], entered_evidence_type = request.vars["entered-evidencetype"])
+    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], entered_evidence_type = request.vars["entered-evidencetype"], is_agree_with_inference = False)
     
     r = '$("#agree-with-inferred-div").css("display","none");' # hide agree/disagree buttons
     
@@ -118,7 +120,7 @@ def saveInclusionCriteriaQuestions():
     print request.vars
     session.mp_method = request.vars.evidencetype
 
-    ic_form_id = db.icl_form.insert(is_started=True, is_finished=False)
+    ic_form_id = db.icl_form.insert(is_started=True, is_finished=True)
     session.ic_form_id = ic_form_id
     
     saveInclusionCriteriaQuestionsHelper(session.mp_method, request.vars, ic_form_id)
@@ -156,7 +158,7 @@ def insertIcQuestionsByCodes(ui_codes, data, ic_form_id):
             question, answer  = global_ic_qs_map[code], data[code]
             
             if question and answer:
-                db.icl_question.insert(icl_form_id=ic_form_id, question=question, answer=answer)    
+                db.icl_question.insert(icl_form_id=ic_form_id, ui_code=code, question=question, answer=answer)    
 
 
 # send sparql query to virtuoso endpoint for specific evidence type inference
