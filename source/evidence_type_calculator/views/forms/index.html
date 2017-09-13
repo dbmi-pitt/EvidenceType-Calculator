@@ -8,6 +8,7 @@
     <script src="/evidence_type_calculator/static/js/drivecalculator.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href= "/evidence_type_calculator/static/css/drivecalculator.css"/>
     {{include 'web2py_ajax.html'}}
+
 </head>
 
 <body>   
@@ -130,4 +131,53 @@
     </div>
   </div>
 </body>
+
+<script>
+
+$(document).ready(function(){
+    $.ajax({url: "loadEvidenceTypeQuestions"})
+    .done(function(data) {
+	if (data && data !== "None") {
+
+	    jsonData = $.parseJSON(data);
+	    console.log(jsonData);
+	    
+	    mp_method = jsonData["mp_method"];
+	    questions = jsonData["questions"];
+	    inferred_ev = jsonData["inferred_evidence_type"];
+	    agree_inferred = jsonData["is_agree_with_inference"];
+	    entered_ev = jsonData["entered_evidence_type"];
+	    
+	    showEvidenceQuestionsByMethod(mp_method);
+
+	    // fill existing answers
+	    for (var uicode in questions) {
+		$("input[name='"+uicode+"'][value='"+questions[uicode]+"']").attr("checked", "checked");
+	    }
+
+	    // show and fill inferred evidence type and entered evidence type
+	    if (inferred_ev && inferred_ev !== "None") {
+		$("#inferred-evidencetype-div").css("display","block");
+		$("#inferred-evidencetype").val(inferred_ev);
+
+		if (agree_inferred != 'T' && agree_inferred != 'F') { // filled agreement
+		    $("agree-with-inferred-div").css("display","block")
+		} else {
+		    if (agree_inferred == 'F') { // not user entered
+			$("#entered-evidencetype-div").css("display","block");
+			if (entered_ev && entered_ev !== "None") {
+			    $("#entered-evidencetype").val(entered_ev);
+			    showInclusionCriteriaByMethod(mp_method);
+			}			
+		    } else {
+			showInclusionCriteriaByMethod(mp_method);
+		    }
+		    
+		}	
+	    }
+	}
+    });
+});
+</script>
+
 </html>

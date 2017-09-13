@@ -5,8 +5,7 @@ def index():
     # truncate all data - only for dev/test
     # truncateAllTables()
     
-    participants = getParticipants()
-    
+    participants = getParticipants()    
     participant_options = []
     for participant in participants:
         participant_options.append(OPTION(participant[0], _value=participant[0]))

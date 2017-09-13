@@ -21,6 +21,36 @@ function hideForms() {
     $("#ic-comment-div").css("display","none");
 }
 
+// show specific evidence type form
+function showEvidenceQuestionsByMethod(mp_method) {
+    if (mp_method == "Case Report") { 
+	$("#caseReport").css("display","block");
+    } else if (mp_method == "DDI clinical trial") {
+	$("#clinicalTrial").css("display","block");		
+    } else if (mp_method == "Metabolic Experiment") {
+	$("#metabolic").css("display","block");		
+    } else if (mp_method == "Transport Experiment") {
+	$("#transport").css("display","block");			
+    } else {
+	console.log("[ERROR] evidence type undefined: " + mp_method);
+    }
+}
+
+// show specific inclusion criteria form
+function showInclusionCriteriaByMethod(mp_method) {
+    if (mp_method == "Case Report")
+        $("#cr-ic-questions-div").css("display","block");
+    else if (mp_method == "DDI clinical trial")
+        $("#ct-ic-questions-div").css("display","block");
+    else if (mp_method == "Metabolic Experiment")
+        $("#ex-mt-ic-questions-div").css("display","block");
+    else if (mp_method == "Transport Experiment")
+        $("#ex-tp-ic-questions-div").css("display","block");
+    else 
+	console.log("[ERROR] evidence type undefined: " + mp_method);
+}
+
+
 $(document).ready(function(){
     // select high level evidence type (mp method) 
     $('.dropdown-menu a.test').on("click", function(e){
