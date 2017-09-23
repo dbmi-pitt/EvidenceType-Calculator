@@ -22,42 +22,92 @@ SPARQL_RANDOMIZATION = '''
 '''
 
 SPARQL_PAR_GROUPS = '''
+
 ?aItem obo:BFO_0000055 ?rItem. # the assay realizes a design
 ?rItem a obo:BFO_0000017; 
      obo:RO_0000059 ?cItem. # the realizable entity concretizes a clinical study design 
-
 ?cItem a obo:OBI_0500001;
        obo:BFO_0000051 ?pItem. # the clinical study design has_part
-
 ?pItem a obo:OBI_0500006. # parallel group design
+
 '''
 
 SPARQL_PK = '''
+
+?aItem obo:OBI_0000293 ?dItem1. # has specified input some drug
+?dItem1 a obo:CHEBI_24431. # CHEBI chemical entity
+
 ?aItem obo:OBI_0000293 ?oItem1. # has specified input some organism 
 ?oItem1 a obo:OBI_0100026; # dideo:organism
              obo:RO_0000056 ?pItem1. # participates_in
 ?pItem1 a obo:DIDEO_00000052. # dideo:pharmacokinetic process
+
+'''
+
+SPARQL_NOT_PK = '''
+
+?aItem obo:OBI_0000293 ?dItem1. # has specified input some drug
+?dItem1 a obo:CHEBI_24431. # CHEBI chemical entity
+
+?aItem obo:OBI_0000293 ?dItem2.FILTER(?dItem1 != ?dItem2) # has specified input some other drug
+?dItem2 a obo:CHEBI_24431. # CHEBI chemical entity
+
+FILTER NOT EXISTS {
+?aItem obo:OBI_0000293 ?oItem1. # has specified input some organism 
+?oItem1 a obo:OBI_0100026; # dideo:organism
+             obo:RO_0000056 ?pItem1. # participates_in
+?pItem1 a obo:DIDEO_00000052. # dideo:pharmacokinetic process
+}
+
 '''
 
 SPARQL_PHENOTYPE = '''
+
 ?aItem obo:OBI_0000293 ?oItem2. # has specified input some organism 
 ?oItem2 a obo:OBI_0100026; # organism
        obo:RO_0000056 ?pItem2. # participates_in
 ?pItem2 a obo:ERO_0000923. # phenotype characterization
+
+'''
+
+SPARQL_NOT_PHENOTYPE = '''
+
+FILTER NOT EXISTS {
+ ?aItem obo:OBI_0000293 ?oItem2. # has specified input some organism 
+ ?oItem2 a obo:OBI_0100026; # organism
+       obo:RO_0000056 ?pItem2. # participates_in
+ ?pItem2 a obo:ERO_0000923. # phenotype characterization
+}
+
 '''
 
 SPARQL_GENOTYPE = '''
+
 ?aItem obo:OBI_0000293 ?oItem3. # has specified input some organism 
 ?oItem3 a obo:OBI_0100026; # organism
      obo:RO_0000056 ?gItem3. # participates_in
 ?gItem3 a efo:EFO_0000750. # genotype characterization
+
+'''
+
+SPARQL_NOT_GENOTYPE = '''
+
+FILTER NOT EXISTS {
+?aItem obo:OBI_0000293 ?oItem3. # has specified input some organism 
+?oItem3 a obo:OBI_0100026; # organism
+     obo:RO_0000056 ?gItem3. # participates_in
+?gItem3 a efo:EFO_0000750. # genotype characterization
+}
+
 '''
 
 SPARQL_EV_TYPE = '''
+
     ?evItem  a ?evType; # get all of the other evidence types this is classified as 
               obo:IAO_0000136 ?aItem.  # an evidence item defined using Cafe is about an assay item
  
     ?evType rdfs:label ?label.
+
 '''
 
 
@@ -277,14 +327,20 @@ WHERE {
     # examining pharmacokinetics?
     if data['ct-ev-question-3'] == 'yes':
         q = q + SPARQL_PK
+    elif data['ct-ev-question-3'] == 'no':
+        q = q + SPARQL_NOT_PK
 
     # phenotyping done as part of the study?
     if data['ct-ev-question-4'] == 'yes':
         q = q + SPARQL_PHENOTYPE
+    elif data['ct-ev-question-4'] == 'no':
+        q = q + SPARQL_NOT_PHENOTYPE
 
     # genotyping done as part of the study?
     if data['ct-ev-question-5'] == 'yes':
         q = q + SPARQL_GENOTYPE
+    if data['ct-ev-question-5'] == 'no':
+        q = q + SPARQL_NOT_GENOTYPE
     
     # close the query with a request for the matching evidence types 
     q = q + SPARQL_EV_TYPE + '''
@@ -293,13 +349,27 @@ WHERE {
     print q
     tstore.setQuery(q)
     tstore.setReturnFormat(JSON)
-    qr = tstore.query().convert()    
+    qr = tstore.query().convert()
+    etRslt = ""
+
     if len(qr["results"]["bindings"]) == 0:
         print "results from sparql query is none "
+        etRslt = "No evidence type matching the chosen characteristics"
     else:
         print "results: %s" % qr
-    
-    inferred_evidence_type = "Demo inferred evidence type"
+        evTypeData = [{"evItem":x["evItem"]["value"] ,"label":x["label"]["value"], "evType":x["evType"]["value"]} for x in qr["results"]["bindings"]]
+        print "evTypeData: %s" % evTypeData
+        curEvItem = ""
+        for it in evTypeData:
+            if it["evItem"] == curEvItem:
+                etRslt += "-->%s" % it["label"]
+            else:
+                curEvItem = it["evItem"]
+                etRslt += ": %s" % it["label"]
+        if etRslt == "":
+            etRslt = "ERROR: Couldn't infer evidence type"
+            
+    inferred_evidence_type = etRslt
     return inferred_evidence_type
 
 
