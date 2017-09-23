@@ -7,6 +7,7 @@ SPARQL_HOST = '''http://localhost:8890/sparql'''
 SPARQL_PREFIXES = '''
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX efo: <http://www.ebi.ac.uk/efo/>
 '''
 SPARQL_GRAPH = '''<http://www.semanticweb.org/rdb20/ontologies/2017/8/dikb-etypes-09222017#>'''
 SPARQL_NO_RANDOMIZATION = '''
@@ -19,6 +20,39 @@ SPARQL_RANDOMIZATION = '''
 
     ?pItem a obo:OBI_0302900. # group randomization design
 '''
+
+SPARQL_PAR_GROUPS = '''
+?aItem obo:BFO_0000055 ?rItem. # the assay realizes a design
+?rItem a obo:BFO_0000017; 
+     obo:RO_0000059 ?cItem. # the realizable entity concretizes a clinical study design 
+
+?cItem a obo:OBI_0500001;
+       obo:BFO_0000051 ?pItem. # the clinical study design has_part
+
+?pItem a obo:OBI_0500006. # parallel group design
+'''
+
+SPARQL_PK = '''
+?aItem obo:OBI_0000293 ?oItem1. # has specified input some organism 
+?oItem1 a obo:OBI_0100026; # dideo:organism
+             obo:RO_0000056 ?pItem1. # participates_in
+?pItem1 a obo:DIDEO_00000052. # dideo:pharmacokinetic process
+'''
+
+SPARQL_PHENOTYPE = '''
+?aItem obo:OBI_0000293 ?oItem2. # has specified input some organism 
+?oItem2 a obo:OBI_0100026; # organism
+       obo:RO_0000056 ?pItem2. # participates_in
+?pItem2 a obo:ERO_0000923. # phenotype characterization
+'''
+
+SPARQL_GENOTYPE = '''
+?aItem obo:OBI_0000293 ?oItem3. # has specified input some organism 
+?oItem3 a obo:OBI_0100026; # organism
+     obo:RO_0000056 ?gItem3. # participates_in
+?gItem3 a efo:EFO_0000750. # genotype characterization
+'''
+
 SPARQL_EV_TYPE = '''
     ?evItem  a ?evType; # get all of the other evidence types this is classified as 
               obo:IAO_0000136 ?aItem.  # an evidence item defined using Cafe is about an assay item
@@ -219,19 +253,40 @@ def insertIcQuestionsByCodes(ui_codes, data, ic_form_id):
 def getInferredEvType(data):
     print "data as received by getInferredEvType: %s" % str(data)
 
+    # set RDF store connection
     tstore = SPARQLWrapper(SPARQL_HOST)
 
+    # start building the evidence type query
     q = SPARQL_PREFIXES + '''
 SELECT distinct ?evItem ?evType ?label
 FROM ''' + SPARQL_GRAPH + '''
 WHERE {
     ?aItem a obo:OBI_0000070. # a study assay
 '''
+
+    # randomization?
     if data['ct-ev-question-1'] == 'yes':
         q = q + SPARQL_RANDOMIZATION
-    else:
+    elif data['ct-ev-question-1'] == 'no':
         q = q + SPARQL_NO_RANDOMIZATION
 
+    # parallel group design? -- TODO: as defined, there will be no types with both group randomziation AND a parallel groups design. Should we make the q1 and q2 radio buttons work so that users can't select that option
+    if data['ct-ev-question-2'] == 'yes':
+        q = q + SPARQL_PAR_GROUPS
+
+    # examining pharmacokinetics?
+    if data['ct-ev-question-3'] == 'yes':
+        q = q + SPARQL_PK
+
+    # phenotyping done as part of the study?
+    if data['ct-ev-question-4'] == 'yes':
+        q = q + SPARQL_PHENOTYPE
+
+    # genotyping done as part of the study?
+    if data['ct-ev-question-5'] == 'yes':
+        q = q + SPARQL_GENOTYPE
+    
+    # close the query with a request for the matching evidence types 
     q = q + SPARQL_EV_TYPE + '''
 }
 '''
