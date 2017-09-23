@@ -1,6 +1,31 @@
 # -*- coding: utf-8 -*-
 
 import json
+from SPARQLWrapper import SPARQLWrapper, JSON
+
+SPARQL_HOST = '''http://localhost:8890/sparql'''
+SPARQL_PREFIXES = '''
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+'''
+SPARQL_GRAPH = '''<http://www.semanticweb.org/rdb20/ontologies/2017/8/dikb-etypes-09222017#>'''
+SPARQL_NO_RANDOMIZATION = '''
+    ?gItem a owl:NegativePropertyAssertion;
+              owl:sourceIndividual ?aItem;
+              owl:targetIndividual obo:OBI_0302900. # an assay item is the source individual for a negative property assertion about group randomization   
+'''
+SPARQL_RANDOMIZATION = '''
+    ?aItem obo:BFO_0000051 ?pItem. # has_part
+
+    ?pItem a obo:OBI_0302900. # group randomization design
+'''
+SPARQL_EV_TYPE = '''
+    ?evItem  a ?evType; # get all of the other evidence types this is classified as 
+              obo:IAO_0000136 ?aItem.  # an evidence item defined using Cafe is about an assay item
+ 
+    ?evType rdfs:label ?label.
+'''
+
 
 # this file is released under public domain and you can use without limitations
 def index():
@@ -77,7 +102,7 @@ def saveEvidenceTypeQuestions():
             
             
         # evidence type inference
-        inferred_evidence_type = getInferredEvType()
+        inferred_evidence_type = getInferredEvType(request.vars)
         
         r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s");$("#calculate").hide();' % inferred_evidence_type
         return r
@@ -191,7 +216,34 @@ def insertIcQuestionsByCodes(ui_codes, data, ic_form_id):
                 db.icl_question.insert(icl_form_id=ic_form_id, ui_code=code, question=question, answer=answer)    
 
 # send sparql query to virtuoso endpoint for specific evidence type inference
-def getInferredEvType():
+def getInferredEvType(data):
+    print "data as received by getInferredEvType: %s" % str(data)
+
+    tstore = SPARQLWrapper(SPARQL_HOST)
+
+    q = SPARQL_PREFIXES + '''
+SELECT distinct ?evItem ?evType ?label
+FROM ''' + SPARQL_GRAPH + '''
+WHERE {
+    ?aItem a obo:OBI_0000070. # a study assay
+'''
+    if data['ct-ev-question-1'] == 'yes':
+        q = q + SPARQL_RANDOMIZATION
+    else:
+        q = q + SPARQL_NO_RANDOMIZATION
+
+    q = q + SPARQL_EV_TYPE + '''
+}
+'''
+    print q
+    tstore.setQuery(q)
+    tstore.setReturnFormat(JSON)
+    qr = tstore.query().convert()    
+    if len(qr["results"]["bindings"]) == 0:
+        print "results from sparql query is none "
+    else:
+        print "results: %s" % qr
+    
     inferred_evidence_type = "Demo inferred evidence type"
     return inferred_evidence_type
 
