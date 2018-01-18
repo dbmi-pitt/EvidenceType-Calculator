@@ -1,8 +1,10 @@
-=======================
+-----------
 EvidenceType-Calculator
-=======================
+-----------
 
-This project purpose for supporing identify most specific evidence type, serving form of evidence type related questions for Drug drug interaction including Clinical trial, Phenotype clinical study, Experiments, Case Report, etc
+This project purpose for supporing identify most specific evidence type, serving form of evidence type related questions for Drug drug interaction including Clinical trial, Phenotype clinical study, Experiments, Case Report, etc. An example of how the system works can be seen here:
+
+https://docs.google.com/presentation/d/1g5FDLzVJnb0jIr9wQ8YlGIEBag4t6ioupZyd24hi8TE
 
 -----------
 Deployment
