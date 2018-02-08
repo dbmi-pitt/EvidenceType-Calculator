@@ -3,13 +3,128 @@
 import json
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+### START SPARQL header
 SPARQL_HOST = '''http://localhost:8890/sparql'''
 SPARQL_PREFIXES = '''
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX efo: <http://www.ebi.ac.uk/efo/>
 '''
-SPARQL_GRAPH = '''<http://www.semanticweb.org/rdb20/ontologies/2017/8/dikb-etypes-09222017#>'''
+# SPARQL_GRAPH = '''<http://www.semanticweb.org/rdb20/ontologies/2017/8/dikb-etypes-09222017#>'''
+SPARQL_FROM_GRAPH = '''FROM <http://www.semanticweb.org/rdb20/ontologies/2018/1/dikb-etypes-0206018#>
+FROM <http://purl.obolibrary.org/obo/dideo.owl#>'''
+
+### END SPARQL header
+
+### START retrieve evidence types (this goes AFTER the other parts specific to clinical trials, case reports, and experiements)
+SPARQL_EV_TYPE = '''
+
+    ?evItem  a ?evType; # get all of the other evidence types this is classified as 
+              obo:IAO_0000136 ?aItem.  # an evidence item defined using Cafe is about an assay item
+    ?evType rdfs:label ?label.
+
+    FILTER NOT EXISTS {
+      ?evItem a ?z.
+      ?z rdfs:subClassOf ?evType.
+   }
+
+'''
+### END retrieve evidence types
+
+### START of case report instance query parts
+SPARQL_OBSERVATIONAL_REPORT = '''
+    ?aItem obo:RO_0002404 ?pItem. # causally downstream of some occurrent
+    ?pItem a obo:BFO_0000003.
+'''
+
+SPARQL_ADVERSE_EVENT = '''
+     # the occurrent IS an adverse event
+     ?pItem a obo:OAE_0000005.
+'''
+
+SPARQL_NOT_ADVERSE_EVENT = '''
+     # the occurrent is NOT an adverse drug event
+    FILTER NOT EXISTS {
+      ?pItem a obo:OAE_0000005.
+    }    
+'''
+
+SPARQL_PRECEDED_BY_DRUG_ADMIN = '''
+    ?pItem obo:BFO_0000062 ?da. # preceded by drug administration 
+    ?da a obo:DRON_00000031.
+'''
+
+SPARQL_NOT_PRECEDED_BY_DRUG_ADMIN = '''
+   FILTER NOT EXISTS {
+     ?pItem obo:BFO_0000062 ?da. # preceded by drug administration 
+     ?da a obo:DRON_00000031.
+   }
+'''
+
+SPARQL_DDI_ROLES = '''
+    ?da obo:RO_0000057 ?d1.   # the drug administration has participant some entity that is the bearer of an object drug role
+    ?d1 obo:RO_0000053 ?oRole.
+    ?oRole a obo:DIDEO_00000012. 
+    
+    ?da obo:RO_0000057 ?d2.   # the drug administration has participant some entity that is the bearer of a precipitant drug role
+    ?d2 obo:RO_0000053 ?precRole.
+    ?precRole a obo:DIDEO_00000013.
+'''
+
+SPARQL_NOT_DDI_ROLES = '''
+  FILTER NOT EXISTS {
+     ?da obo:RO_0000057 ?d1.   # the drug administration has participant some entity that is the bearer of an object drug role
+     ?d1 obo:RO_0000053 ?oRole.
+     ?oRole a obo:DIDEO_00000012. 
+    
+     ?da obo:RO_0000057 ?d2.   # the drug administration has participant some entity that is the bearer of a precipitant drug role
+     ?d2 obo:RO_0000053 ?precRole.
+     ?precRole a obo:DIDEO_00000013.
+  }
+'''
+
+SPARQL_REPORT_IN_PUBLIC_DATABASE = '''
+    ?eice a obo:DIDEO_00000053;  # evidence information content entity
+       obo:IAO_0000136 ?aItem;   # is about the assay 
+       obo:BFO_0000050 ?prdb.  # is part of a public reporting database
+    ?prdb a obo:DIDEO_00000082.
+'''
+
+SPARQL_REPORT_NOT_IN_PUBLIC_DATABASE = '''
+  FILTER NOT EXISTS {
+    ?eice a obo:DIDEO_00000053;  # evidence information content entity
+       obo:IAO_0000136 ?aItem;   # is about the assay 
+       obo:BFO_0000050 ?prdb.  # is part of a public reporting database
+    ?prdb a obo:DIDEO_00000082.
+  }
+'''
+
+SPARQL_REPORT_EVALUATED_FOR_CAUSALITY = '''
+    ?eice a obo:DIDEO_00000053;  # evidence information content entity
+       obo:IAO_0000136 ?aItem;   # is about the assay 
+       obo:OBI_0000312 ?pp.  # is specified output of planned process that is an ADE causality evaluation protocol
+    ?pp obo:BFO_0000055 ?re. # (realizes a realizable entity...)
+    ?re obo:RO_0000059 ?adeep. # (...that concretizes a planned process...)
+    ?adeep a obo:DIDEO_00000087. # (... that is an ADE causality evaluation protocol)
+'''
+
+SPARQL_REPORT_NOT_EVALUATED_FOR_CAUSALITY = '''
+  FILTER NOT EXISTS {
+    ?eice a obo:DIDEO_00000053;  # evidence information content entity
+       obo:IAO_0000136 ?aItem;   # is about the assay 
+       obo:OBI_0000312 ?pp.  # is specified output of planned process that is an ADE causality evaluation protocol
+    ?pp obo:BFO_0000055 ?re. # (realizes a realizable entity...)
+    ?re obo:RO_0000059 ?adeep. # (...that concretizes a planned process...)
+    ?adeep a obo:DIDEO_00000087. # (... that is an ADE causality evaluation protocol)
+  }
+'''
+
+SPARQL_PUBLICLY_REPORTED = ''' '''
+
+SPARQL_EVAL_PROTOCOL = ''' '''
+### END of case report instance query parts
+
+### START of clinical trial instance query parts
 SPARQL_NO_RANDOMIZATION = '''
     ?gItem a owl:NegativePropertyAssertion;
               owl:sourceIndividual ?aItem;
@@ -100,15 +215,7 @@ FILTER NOT EXISTS {
 }
 
 '''
-
-SPARQL_EV_TYPE = '''
-
-    ?evItem  a ?evType; # get all of the other evidence types this is classified as 
-              obo:IAO_0000136 ?aItem.  # an evidence item defined using Cafe is about an assay item
- 
-    ?evType rdfs:label ?label.
-
-'''
+### END of clinical trial instance query parts
 
 
 # this file is released under public domain and you can use without limitations
@@ -309,38 +416,70 @@ def getInferredEvType(data):
     # start building the evidence type query
     q = SPARQL_PREFIXES + '''
 SELECT distinct ?evItem ?evType ?label
-FROM ''' + SPARQL_GRAPH + '''
+''' + SPARQL_FROM_GRAPH + '''
 WHERE {
     ?aItem a obo:OBI_0000070. # a study assay
 '''
 
-    # randomization?
-    if data['ct-ev-question-1'] == 'yes':
-        q = q + SPARQL_RANDOMIZATION
-    elif data['ct-ev-question-1'] == 'no':
-        q = q + SPARQL_NO_RANDOMIZATION
+    if not data.get('cr-ev-question-1'):
+        print "INFO: skipping case report questions"
+    else:
+        q = q + SPARQL_OBSERVATIONAL_REPORT
+        
+        # adverse drug event report?
+        if data['cr-ev-question-1'] == 'yes':
+            q = q + SPARQL_ADVERSE_EVENT + SPARQL_PRECEDED_BY_DRUG_ADMIN
+        elif data['cr-ev-question-1'] == 'no':
+            q = q + SPARQL_NOT_ADVERSE_EVENT + SPARQL_NOT_PRECEDED_BY_DRUG_ADMIN
 
-    # parallel group design? -- TODO: as defined, there will be no types with both group randomziation AND a parallel groups design. Should we make the q1 and q2 radio buttons work so that users can't select that option
-    if data['ct-ev-question-2'] == 'yes':
-        q = q + SPARQL_PAR_GROUPS
+        # Publicly (spontaneously) reported?
+        if data['cr-ev-question-2'] == 'yes':
+            q = q + SPARQL_REPORT_IN_PUBLIC_DATABASE
+        elif data['cr-ev-question-2'] == 'no':
+            q = q + SPARQL_REPORT_NOT_IN_PUBLIC_DATABASE
 
-    # examining pharmacokinetics?
-    if data['ct-ev-question-3'] == 'yes':
-        q = q + SPARQL_PK
-    elif data['ct-ev-question-3'] == 'no':
-        q = q + SPARQL_NOT_PK
+        # Involves a suspected drug-drug interaction?
+        if data['cr-ev-question-4'] == 'yes':
+            q = q + SPARQL_DDI_ROLES
+        elif data['cr-ev-question-4'] == 'no':
+            q = q + SPARQL_NOT_DDI_ROLES
 
-    # phenotyping done as part of the study?
-    if data['ct-ev-question-4'] == 'yes':
-        q = q + SPARQL_PHENOTYPE
-    elif data['ct-ev-question-4'] == 'no':
-        q = q + SPARQL_NOT_PHENOTYPE
+        # Was an evaluation of adverse event causality conducted?
+        if data['cr-ev-question-3'] == 'yes':
+            q = q + SPARQL_REPORT_EVALUATED_FOR_CAUSALITY
+        elif data['cr-ev-question-3'] == 'no':
+            q = q + SPARQL_REPORT_NOT_EVALUATED_FOR_CAUSALITY
+            
+    if not data.get('ct-ev-question-1'):
+        print "INFO: skipping clinical trial questions"
+    else:
+        # randomization?
+        if data['ct-ev-question-1'] == 'yes':
+            q = q + SPARQL_RANDOMIZATION
+        elif data['ct-ev-question-1'] == 'no':
+            q = q + SPARQL_NO_RANDOMIZATION
 
-    # genotyping done as part of the study?
-    if data['ct-ev-question-5'] == 'yes':
-        q = q + SPARQL_GENOTYPE
-    if data['ct-ev-question-5'] == 'no':
-        q = q + SPARQL_NOT_GENOTYPE
+        # parallel group design? -- TODO: as defined, there will be no types with both group randomziation AND a parallel groups design. Should we make the q1 and q2 radio buttons work so that users can't select that option
+        if data['ct-ev-question-2'] == 'yes':
+            q = q + SPARQL_PAR_GROUPS
+
+        # examining pharmacokinetics?
+        if data['ct-ev-question-3'] == 'yes':
+            q = q + SPARQL_PK
+        elif data['ct-ev-question-3'] == 'no':
+            q = q + SPARQL_NOT_PK
+
+        # phenotyping done as part of the study?
+        if data['ct-ev-question-4'] == 'yes':
+            q = q + SPARQL_PHENOTYPE
+        elif data['ct-ev-question-4'] == 'no':
+            q = q + SPARQL_NOT_PHENOTYPE
+
+        # genotyping done as part of the study?
+        if data['ct-ev-question-5'] == 'yes':
+            q = q + SPARQL_GENOTYPE
+        elif data['ct-ev-question-5'] == 'no':
+            q = q + SPARQL_NOT_GENOTYPE
     
     # close the query with a request for the matching evidence types 
     q = q + SPARQL_EV_TYPE + '''
