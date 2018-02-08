@@ -118,10 +118,6 @@ SPARQL_REPORT_NOT_EVALUATED_FOR_CAUSALITY = '''
     ?adeep a obo:DIDEO_00000087. # (... that is an ADE causality evaluation protocol)
   }
 '''
-
-SPARQL_PUBLICLY_REPORTED = ''' '''
-
-SPARQL_EVAL_PROTOCOL = ''' '''
 ### END of case report instance query parts
 
 ### START of clinical trial instance query parts
@@ -216,6 +212,53 @@ FILTER NOT EXISTS {
 
 '''
 ### END of clinical trial instance query parts
+
+### START of in vitro metabolism experiments
+SPARQL_IN_VITRO_DESIGN = '''
+    ?aItem obo:BFO_0000055 ?re. # assay realizes a realizable entity...
+    ?re obo:RO_0000059 ?ivd. # ...that concretizes an entity
+    ?ivd a obo:OBI_0001285. # ... that is an in vitro study design
+'''
+
+SPARQL_METABOLISM_IDENTIFICATION = '''
+    ?aItem obo:OBI_0000293 ?dItem1. # has specified input some ?dItem1
+    ?dItem1 a obo:CHEBI_24431; # ?dItem1 a CHEBI chemical entity
+         obo:BFO_0000050 ?dp;  # part of ?dp
+         obo:RO_0000056  ?mp.  # participates in ?mp
+    ?dp a obo:DRON_00000005. # ?dp is a drug product
+    ?mp a obo:GO_0008152.   # ?mp is a metabolic process 
+'''
+
+SPARQL_METABOLISM_INHIBITION = '''
+    ?aItem obo:OBI_0000293 ?dItem1. # has specified input some ?dItem1
+    ?dItem1 a obo:CHEBI_24431; # ?dItem1 a CHEBI chemical entity
+         obo:BFO_0000050 ?dp;  # part of ?dp
+         obo:RO_0000056  ?mp.  # participates in ?mp
+    ?dp a obo:DRON_00000005. # ?dp is a drug product
+    ?mp a obo:GO_0009892.  # ?mp is a negative regulation of metabolic process 
+'''
+
+SPARQL_INVOLVES_CYP450 = '''
+    ?mp obo:RO_0000057 ?cyp. # ?mp has participant some ?cyp 
+    ?cyp a obo:CHEBI_38559.
+'''
+
+SPARQL_NOT_INVOLVES_CYP450 = '''
+  FILTER NOT EXISTS { 
+    ?mp obo:RO_0000057 ?cyp. # ?mp has participant some ?cyp 
+    ?cyp a obo:CHEBI_38559.
+  }
+'''
+
+### END of in vitro metabolism experiments
+
+### START of in vitro transport experiments
+SPARQL_EX_VIVO_DESIGN = '''
+    ?aItem obo:BFO_0000055 ?re. # assay realizes a realizable entity...
+    ?re obo:RO_0000059 ?ivd. # ...that concretizes an entity
+    ?ivd a obo:OBI_0001211. # ... that is an ex vivo study design
+'''
+### END of in vitro transport experiments
 
 
 # this file is released under public domain and you can use without limitations
@@ -480,7 +523,27 @@ WHERE {
             q = q + SPARQL_GENOTYPE
         elif data['ct-ev-question-5'] == 'no':
             q = q + SPARQL_NOT_GENOTYPE
-    
+
+    if not data.get('ex-ev-mt-question-1'):
+        print "INFO: skipping in vitro metabolic questions"
+    else:
+        q = q + SPARQL_IN_VITRO_DESIGN
+        
+        if data['ex-ev-mt-question-1'] == 'inhibition':
+            q = q + SPARQL_METABOLISM_INHIBITION
+        elif data['ex-ev-mt-question-1'] == 'identification':
+            q = q + SPARQL_METABOLISM_IDENTIFICATION
+
+        if data['ex-ev-mt-question-4'] == 'yes':
+            q = q + SPARQL_INVOLVES_CYP450
+        elif data['ex-ev-mt-question-4'] == 'no':
+            q = q + SPARQL_NOT_INVOLVES_CYP450
+
+    if not data.get('ex-tp-ev-question-1'):
+        print "INFO: skipping in vitro transport questions"
+    else:
+        q = q + SPARQL_IN_VITRO_DESIGN
+        
     # close the query with a request for the matching evidence types 
     q = q + SPARQL_EV_TYPE + '''
 }

@@ -4,16 +4,25 @@
   <tr><td style="width:50%">
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Subtype? </label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="ex-ev-mt-question-1" type="radio" ng-model="myVar" value="inhibition">Inhibition
-    </label></td>
+        <input name="ex-ev-mt-question-1" type="radio" ng-model="myVar" value="inhibition">Inhibition</label></td>
     <td style="width:20%"><label class="radio-inline">
-        <input name="ex-ev-mt-question-1" type="radio" ng-model="myVar" value="identification">Identification
-    </label></td>
+        <input name="ex-ev-mt-question-1" type="radio" ng-model="myVar" value="identification">Identification</label></td>
     <td style="width:20%"><label class="radio-inline">
         <input name="ex-ev-mt-question-1" type="radio" ng-model="myVar" value="unsure">Unsure
   </label></td></tr>
 
 
+  <!-- focus on CYP450 -->  
+  <tr><td style="width:50%">
+      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Focused on a CYP450 enzyme? </label></td>
+    <td style="width:20%"><label class="radio-inline">
+        <input name="ex-ev-mt-question-4" type="radio" ng-model="myVar" value="yes">Yes</label></td>
+    <td style="width:20%"><label class="radio-inline">
+        <input name="ex-ev-mt-question-4" type="radio" ng-model="myVar" value="no">No</label></td>
+    <td style="width:20%"><label class="radio-inline">
+        <input name="ex-ev-mt-question-4" type="radio" ng-model="myVar" value="unsure">Unsure
+  </label></td></tr>
+  
   <!-- metabolic experiment assay type -->  
   <tr><td style="width:50%">
       <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label></td>
@@ -41,4 +50,4 @@
   </label></td></tr>
 </table>
 
-<button type="button" class="btn btn-default" id="calculate-ex-mt" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ex-ev-mt-question-1', 'ex-ev-mt-question-2', 'ex-ev-mt-question-3'], ':eval');">Calculate</button>
+<button type="button" class="btn btn-default" id="calculate-ex-mt" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ex-ev-mt-question-1', 'ex-ev-mt-question-2', 'ex-ev-mt-question-4', 'ex-ev-mt-question-3'], ':eval');">Calculate</button>
