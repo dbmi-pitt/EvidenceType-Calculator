@@ -3,11 +3,23 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="/evidence_type_calculator/static/js/jquery-3.2.1.min.js"></script>
+    <!-- <script src="/evidence_type_calculator/static/js/jquery-3.3.1.min.js"></script> --> <!-- TODO: update to jquery-3.3.1 sometime. Currently triggers error b/c of 'button' class -->
     <script src="/evidence_type_calculator/static/js/bootstrap-3.3.7.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/evidence_type_calculator/static/css/bootstrap-3.3.7.min.css" crossorigin="anonymous"/>
     <script src="/evidence_type_calculator/static/js/drivecalculator.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href= "/evidence_type_calculator/static/css/drivecalculator.css"/>
     {{include 'web2py_ajax.html'}}
+    <script>
+      <!-- provides a simple prompt for the user to wait -->
+      $(document).ajaxStart(function(){
+      // Show image container
+      $("#loader").show();
+      });
+      $(document).ajaxComplete(function(){
+      // Hide image container
+      $("#loader").hide();
+      });  
+    </script>
 
 </head>
 
@@ -63,6 +75,12 @@
 	<div class= "radioform" style="display:none;" id='transport'>
 	  {{include 'forms/ex_tp_ev_questions.html'}}  
         </div>
+
+	<!-- provide a simple prompt for the user to wait -->
+	<div id='loader' style='display: none;'>
+	  <h2>Please wait...</h2>
+	</div>
+
 
 	<!-- Inferred evidence type -->
 	<br><br>

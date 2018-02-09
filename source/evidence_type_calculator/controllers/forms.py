@@ -221,6 +221,14 @@ SPARQL_IN_VITRO_DESIGN = '''
     ?ivd a obo:OBI_0001285. # ... that is an in vitro study design
 '''
 
+SPARQL_NOT_IN_VITRO_DESIGN = '''
+  NOT EXISTS {
+    ?aItem obo:BFO_0000055 ?re. # assay realizes a realizable entity...
+    ?re obo:RO_0000059 ?ivd. # ...that concretizes an entity
+    ?ivd a obo:OBI_0001285. # ... that is an in vitro study design
+  }
+'''
+
 SPARQL_METABOLISM_IDENTIFICATION = '''
     ?aItem obo:OBI_0000293 ?dItem1. # has specified input some ?dItem1
     ?dItem1 a obo:CHEBI_24431; # ?dItem1 a CHEBI chemical entity
@@ -230,6 +238,17 @@ SPARQL_METABOLISM_IDENTIFICATION = '''
     ?mp a obo:GO_0008152.   # ?mp is a metabolic process 
 '''
 
+SPARQL_NOT_METABOLISM_IDENTIFICATION = '''
+  FILTER NOT EXISTS {
+    ?aItem obo:OBI_0000293 ?dItem1. # has specified input some ?dItem1
+    ?dItem1 a obo:CHEBI_24431; # ?dItem1 a CHEBI chemical entity
+         obo:BFO_0000050 ?dp;  # part of ?dp
+         obo:RO_0000056  ?mp.  # participates in ?mp
+    ?dp a obo:DRON_00000005. # ?dp is a drug product
+    ?mp a obo:GO_0008152.   # ?mp is a metabolic process 
+  }
+'''
+
 SPARQL_METABOLISM_INHIBITION = '''
     ?aItem obo:OBI_0000293 ?dItem1. # has specified input some ?dItem1
     ?dItem1 a obo:CHEBI_24431; # ?dItem1 a CHEBI chemical entity
@@ -237,6 +256,17 @@ SPARQL_METABOLISM_INHIBITION = '''
          obo:RO_0000056  ?mp.  # participates in ?mp
     ?dp a obo:DRON_00000005. # ?dp is a drug product
     ?mp a obo:GO_0009892.  # ?mp is a negative regulation of metabolic process 
+'''
+
+SPARQL_NOT_METABOLISM_INHIBITION = '''
+  FILTER NOT EXISTS {
+    ?aItem obo:OBI_0000293 ?dItem1. # has specified input some ?dItem1
+    ?dItem1 a obo:CHEBI_24431; # ?dItem1 a CHEBI chemical entity
+         obo:BFO_0000050 ?dp;  # part of ?dp
+         obo:RO_0000056  ?mp.  # participates in ?mp
+    ?dp a obo:DRON_00000005. # ?dp is a drug product
+    ?mp a obo:GO_0009892.  # ?mp is a negative regulation of metabolic process 
+  }
 '''
 
 SPARQL_INVOLVES_CYP450 = '''
@@ -256,6 +286,14 @@ SPARQL_INVOLVES_RECOMBINANT_SYSTEM = '''
    ?sysItem1 a obo:CLO_0000031. # ?sysItem1 a cell line
 '''
 
+SPARQL_NOT_INVOLVES_RECOMBINANT_SYSTEM = '''
+  FILTER NOT EXISTS {
+   ?aItem obo:OBI_0000293 ?sysItem1. # has specified input some ?sysItem1
+   ?sysItem1 a obo:CLO_0000031. # ?sysItem1 a cell line
+  }
+'''
+
+
 SPARQL_INVOLVES_HUMAN_MICROSOMES = '''
    ?aItem obo:OBI_0000293 ?sysItem1. # has specified input some ?sysItem1
    ?sysItem1 a obo:OBI_0001479; # ?sysItem1 a tissue sample 
@@ -263,6 +301,17 @@ SPARQL_INVOLVES_HUMAN_MICROSOMES = '''
    ?scp a obo:OBI_0000659; # ?scp is a specimen collection process
       obo:OBI_0000293 ?hs.   # ?scp has specified input ?hs 
    #?hs a obo:NCBITaxon_9606. # ?hs of type Homo Sapiens
+'''
+
+SPARQL_NOT_INVOLVES_HUMAN_MICROSOMES = '''
+  FILTER NOT EXISTS {
+   ?aItem obo:OBI_0000293 ?sysItem1. # has specified input some ?sysItem1
+   ?sysItem1 a obo:OBI_0001479; # ?sysItem1 a tissue sample 
+        obo:OBI_0000312 ?scp.   # ?sysItem1 a specified output of ?scp
+   ?scp a obo:OBI_0000659; # ?scp is a specimen collection process
+      obo:OBI_0000293 ?hs.   # ?scp has specified input ?hs 
+   #?hs a obo:NCBITaxon_9606. # ?hs of type Homo Sapiens
+ }
 '''
 
 SPARQL_INVOLVES_ANTIBODY_INHIBITOR = '''
@@ -608,7 +657,9 @@ WHERE {
             q = q + SPARQL_ADVERSE_EVENT + SPARQL_PRECEDED_BY_DRUG_ADMIN
         elif data['cr-ev-question-1'] == 'no':
             q = q + SPARQL_NOT_ADVERSE_EVENT + SPARQL_NOT_PRECEDED_BY_DRUG_ADMIN
-
+        elif data['cr-ev-question-1'] == 'unsure':
+            q = q + SPARQL_NOT_ADVERSE_EVENT + SPARQL_NOT_PRECEDED_BY_DRUG_ADMIN
+            
         # Publicly (spontaneously) reported?
         if data['cr-ev-question-2'] == 'yes':
             q = q + SPARQL_REPORT_IN_PUBLIC_DATABASE
@@ -667,23 +718,34 @@ WHERE {
             q = q + SPARQL_METABOLISM_INHIBITION
         elif data['ex-ev-mt-question-1'] == 'identification':
             q = q + SPARQL_METABOLISM_IDENTIFICATION
+        elif data['ex-ev-mt-question-1'] == 'unsure':
+            q = q + SPARQL_NOT_METABOLISM_INHIBITION + SPARQL_NOT_METABOLISM_IDENTIFICATION
 
+            
         if data['ex-ev-mt-question-4'] == 'yes':
             q = q + SPARQL_INVOLVES_CYP450
         elif data['ex-ev-mt-question-4'] == 'no':
             q = q + SPARQL_NOT_INVOLVES_CYP450
+        elif data['ex-ev-mt-question-4'] == 'unsure':
+            q = q + SPARQL_NOT_INVOLVES_CYP450
 
+            
         if data['ex-ev-mt-question-2'] == 'humanTissue':
             q = q + SPARQL_INVOLVES_HUMAN_MICROSOMES
         elif data['ex-ev-mt-question-2'] == 'cellLine':
             q = q + SPARQL_INVOLVES_RECOMBINANT_SYSTEM
+        elif data['ex-ev-mt-question-2'] == 'unsure':
+            q = q  # Could be either so we can't use NOT
 
+            
         if data['ex-ev-mt-question-3'] == 'antibody':
             q = q + SPARQL_INVOLVES_ANTIBODY_INHIBITOR
         elif data['ex-ev-mt-question-3'] == 'chemical':
             q = q + SPARQL_INVOLVES_CHEMICAL_INHIBITOR
         elif data['ex-ev-mt-question-3'] == 'none':
             q = q + SPARQL_NOT_INVOLVES_ANTIBODY_INHIBITOR + SPARQL_NOT_INVOLVES_CHEMICAL_INHIBITOR
+        elif data['ex-ev-mt-question-3'] == 'unsure':
+            q = q + SPARQL_NOT_INVOLVES_ANTIBODY_INHIBITOR + SPARQL_NOT_INVOLVES_CHEMICAL_INHIBITOR            
             
     if not data.get('ex-tp-ev-question-1'):
         print "INFO: skipping in vitro transport questions"
