@@ -19,9 +19,10 @@ FROM <http://purl.obolibrary.org/obo/dideo.owl#>'''
 ### START retrieve evidence types (this goes AFTER the other parts specific to clinical trials, case reports, and experiements)
 SPARQL_EV_TYPE = '''
 
-    ?evItem  a ?evType; # get all of the other evidence types this is classified as 
-              obo:IAO_0000136 ?aItem.  # an evidence item defined using Cafe is about an assay item
-    ?evType rdfs:label ?label.
+    ?evItem  a ?evType;             # get all of the other evidence types this is classified as 
+           obo:IAO_0000136 ?aItem.  # an evidence item is about the assay item ?aItem
+    ?evType rdfs:label ?label;            # get the evidence type label... 
+            obo:IAO_0000115 ?definition.  # ...and definition(s)
 
     FILTER NOT EXISTS {
       ?evItem a ?z.
@@ -297,7 +298,6 @@ SPARQL_NOT_INVOLVES_CHEMICAL_INHIBITOR = '''
    ?role a obo:CHEBI_35222.     # ?role is an inhibitor
  }
 '''
-
 ### END of in vitro metabolism experiments
 
 ### START of in vitro transport experiments
@@ -306,6 +306,91 @@ SPARQL_EX_VIVO_DESIGN = '''
     ?re obo:RO_0000059 ?ivd. # ...that concretizes an entity
     ?ivd a obo:OBI_0001211. # ... that is an ex vivo study design
 '''
+
+SPARQL_TRANSPORT_IDENTIFICATION = '''
+    ?aItem obo:OBI_0000293 ?chemSubst1. # has specified input some ?chemSubst1
+    ?chemSubst1 a obo:CHEBI_24431;      # ?chemSubst1 a CHEBI chemical entity
+          obo:OBI_0000312 ?tp.          # is specified output of ?tp
+    ?tp a obo:GO_0098739;               # ?tp is import across a plasma membrane
+          obo:RO_0000057 ?pt;           # ?tp has participant some ?pt
+          obo:RO_0000057 ?chemSubst2.   # ?tp has participant some ?chemSubst2
+    ?pt a obo:CHEBI_36080.              # ?pt a protein
+    ?chemSubst2 a obo:CHEBI_24431;      # ?chemSubst2 a CHEBI chemical entity
+            obo:BFO_0000050 ?dp.        # part of ?dp    
+    ?dp a obo:DRON_00000005.            # ?dp is a drug product
+'''
+
+SPARQL_TRANSPORT_INHIBITION = '''
+   ?aItem obo:OBI_0000293 ?chemSubst1. # has specified input some ?chemSubst1
+    ?chemSubst1 a obo:CHEBI_24431;      # ?chemSubst1 a CHEBI chemical entity
+          obo:OBI_0000312 ?tp.          # is specified output of ?tp
+    ?tp a obo:GO_0032410;               # ?tp is negative regulation of transporter activity
+          obo:RO_0000057 ?pt;           # ?tp has participant some ?pt
+          obo:RO_0000057 ?chemSubst2.   # ?tp has participant some ?chemSubst2
+    ?pt a obo:CHEBI_36080.              # ?pt a protein
+    ?chemSubst2 a obo:CHEBI_24431;      # ?chemSubst2 a CHEBI chemical entity
+            obo:BFO_0000050 ?dp.        # part of ?dp    
+    ?dp a obo:DRON_00000005.            # ?dp is a drug product
+'''
+
+SPARQL_OVEREXPRESSED_CELL_LINE = '''
+    ?aItem obo:OBI_0000293 ?clc. # has specified input some ?clc
+    ?clc a obo:CLO_0000001;      # ?clc a cell line cell
+          obo:RO_0000056  ?ovx.  # ?clc participates in ?ovx
+    ?ovx a obo:INO_0000114.      # ?ovx an overexpression 
+'''
+
+SPARQL_NOT_OVEREXPRESSED_CELL_LINE = '''
+  FILTER NOT EXISTS {
+    ?aItem obo:OBI_0000293 ?clc. # has specified input some ?clc
+    ?clc a obo:CLO_0000001;      # ?clc a cell line cell
+          obo:RO_0000056  ?ovx.  # ?clc participates in ?ovx
+    ?ovx a obo:INO_0000114.      # ?ovx an overexpression 
+  }
+'''
+
+SPARQL_CACO_2_CELL_LINE = '''
+    ?aItem obo:OBI_0000293 ?cl. # has specified input some ?cl
+    ?cl a obo:CLO_0002172.      # ?cl a Caco 2 cell
+''' 
+
+SPARQL_NOT_CACO_2_CELL_LINE = '''
+  FILTER NOT EXISTS {
+    ?aItem obo:OBI_0000293 ?cl. # has specified input some ?cl
+    ?cl a obo:CLO_0002172.      # ?cl a Caco 2 cell
+  }
+''' 
+
+SPARQL_OATP1B1 = '''
+     ?pt a obo:PR_000015223. # ?pt is a solute carrier organic anion transporter family member 1B1
+'''
+
+SPARQL_NOT_OATP1B1 = '''
+   FILTER NOT EXISTS {
+     ?pt a obo:PR_000015223. # ?pt is a solute carrier organic anion transporter family member 1B1
+   }
+'''
+
+SPARQL_OATP1B3 = '''
+     ?pt a obo:PR_000015224. # ?pt is a solute carrier organic anion transporter family member 1B3
+'''
+
+SPARQL_NOT_OATP1B3 = '''
+  FILTER NOT EXISTS {
+     ?pt a obo:PR_000015224. # ?pt is a solute carrier organic anion transporter family member 1B3
+  }
+'''
+
+SPARQL_P_GLYCOPROTEIN = '''
+     ?pt a obo:PR_000001891. # ?pt is a multidrug resistance protein 1 (p-glycoprotein)  
+'''
+
+SPARQL_NOT_P_GLYCOPROTEIN = '''
+  FILTER NOT EXISTS {
+     ?pt a obo:PR_000001891. # ?pt is a multidrug resistance protein 1 (p-glycoprotein)  
+  }
+'''
+
 ### END of in vitro transport experiments
 
 
@@ -384,9 +469,10 @@ def saveEvidenceTypeQuestions():
             
             
         # evidence type inference
-        inferred_evidence_type = getInferredEvType(request.vars)
+        inferred_evidence_type_tpl = getInferredEvType(request.vars)
         
-        r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s");$("#calculate").hide();' % inferred_evidence_type
+        r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s");jQuery("#inferred-evidencetype-def").html("%s");$("#calculate").hide();' % (inferred_evidence_type_tpl[0],inferred_evidence_type_tpl[1])
+
         return r
 
 
@@ -506,7 +592,7 @@ def getInferredEvType(data):
 
     # start building the evidence type query
     q = SPARQL_PREFIXES + '''
-SELECT distinct ?evItem ?evType ?label
+SELECT distinct ?evItem ?evType ?label ?definition
 ''' + SPARQL_FROM_GRAPH + '''
 WHERE {
     ?aItem a obo:OBI_0000070. # a study assay
@@ -602,8 +688,30 @@ WHERE {
     if not data.get('ex-tp-ev-question-1'):
         print "INFO: skipping in vitro transport questions"
     else:
-        q = q + SPARQL_IN_VITRO_DESIGN
-        
+        q = q + SPARQL_EX_VIVO_DESIGN
+
+        if data['ex-tp-ev-question-1'] == 'inhibition':
+            q = q + SPARQL_TRANSPORT_INHIBITION
+        elif data['ex-tp-ev-question-1'] == 'identification':
+            q = q + SPARQL_TRANSPORT_IDENTIFICATION
+
+        if data['ex-tp-ev-question-2'] == 'cacoTwoCellLines':
+            q = q + SPARQL_CACO_2_CELL_LINE
+        elif data['ex-tp-ev-question-2'] == 'overExpressedCellLines':
+            q = q + SPARQL_OVEREXPRESSED_CELL_LINE
+        elif data['ex-tp-ev-question-2'] == 'unsure':
+            q = q + SPARQL_NOT_OVEREXPRESSED_CELL_LINE + SPARQL_NOT_CACO_2_CELL_LINE
+
+
+        if data['ex-tp-ev-question-3'] == 'pGlycoprotein':
+            q = q + SPARQL_P_GLYCOPROTEIN
+        elif data['ex-tp-ev-question-3'] == 'oatpOnebOne':
+            q = q + SPARQL_OATP1B1
+        elif data['ex-tp-ev-question-3'] == 'oatpOnebThree':
+            q = q + SPARQL_OATP1B3
+        elif data['ex-tp-ev-question-3'] == 'unsure':
+            q = q + SPARQL_NOT_OATP1B1 + SPARQL_NOT_OATP1B3 + SPARQL_NOT_P_GLYCOPROTEIN
+            
     # close the query with a request for the matching evidence types 
     q = q + SPARQL_EV_TYPE + '''
 }
@@ -613,25 +721,28 @@ WHERE {
     tstore.setReturnFormat(JSON)
     qr = tstore.query().convert()
     etRslt = ""
-
+    definition = ""
+    
     if len(qr["results"]["bindings"]) == 0:
         print "results from sparql query is none "
         etRslt = "No evidence type matching the chosen characteristics"
     else:
         print "results: %s" % qr
-        evTypeData = [{"evItem":x["evItem"]["value"] ,"label":x["label"]["value"], "evType":x["evType"]["value"]} for x in qr["results"]["bindings"]]
+        evTypeData = [{"evItem":x["evItem"]["value"] ,"label":x["label"]["value"],"evType":x["evType"]["value"],"definition":x["definition"]["value"]} for x in qr["results"]["bindings"]]
         print "evTypeData: %s" % evTypeData
         curEvItem = ""
         for it in evTypeData:
             if it["evItem"] == curEvItem:
                 etRslt += "-->%s" % it["label"]
+                definition += "-->%s" % it["definition"]
             else:
                 curEvItem = it["evItem"]
-                etRslt += ": %s" % it["label"]
+                etRslt += "%s" % it["label"]
+                definition += "%s" % it["definition"]
         if etRslt == "":
             etRslt = "ERROR: Couldn't infer evidence type"
             
-    inferred_evidence_type = etRslt
+    inferred_evidence_type = (etRslt, definition)
     return inferred_evidence_type
 
 
