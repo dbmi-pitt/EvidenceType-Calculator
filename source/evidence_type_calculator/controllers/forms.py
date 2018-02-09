@@ -250,6 +250,54 @@ SPARQL_NOT_INVOLVES_CYP450 = '''
   }
 '''
 
+SPARQL_INVOLVES_RECOMBINANT_SYSTEM = '''
+   ?aItem obo:OBI_0000293 ?sysItem1. # has specified input some ?sysItem1
+   ?sysItem1 a obo:CLO_0000031. # ?sysItem1 a cell line
+'''
+
+SPARQL_INVOLVES_HUMAN_MICROSOMES = '''
+   ?aItem obo:OBI_0000293 ?sysItem1. # has specified input some ?sysItem1
+   ?sysItem1 a obo:OBI_0001479; # ?sysItem1 a tissue sample 
+        obo:OBI_0000312 ?scp.   # ?sysItem1 a specified output of ?scp
+   ?scp a obo:OBI_0000659; # ?scp is a specimen collection process
+      obo:OBI_0000293 ?hs.   # ?scp has specified input ?hs 
+   #?hs a obo:NCBITaxon_9606. # ?hs of type Homo Sapiens
+'''
+
+SPARQL_INVOLVES_ANTIBODY_INHIBITOR = '''
+   ?aItem obo:OBI_0000293 ?sysItem2. # has specified input some ?sysItem2
+   ?sysItem2 a obo:GO_0042571;  # ?sysItem2 a immunoglobulin complex, circulating 
+          obo:RO_0000053 ?role. # ?sysItem2 is the bearer of ?role
+   ?role a obo:CHEBI_35222.     # ?role is an inhibitor
+'''
+
+SPARQL_NOT_INVOLVES_ANTIBODY_INHIBITOR = '''
+ FILTER NOT EXISTS {
+   ?aItem obo:OBI_0000293 ?sysItem2. # has specified input some ?sysItem2
+   ?sysItem2 a obo:GO_0042571;  # ?sysItem2 a immunoglobulin complex, circulating 
+          obo:RO_0000053 ?role. # ?sysItem2 is the bearer of ?role
+   ?role a obo:CHEBI_35222.     # ?role is an inhibitor
+ }
+'''
+
+SPARQL_INVOLVES_CHEMICAL_INHIBITOR = '''
+   ?aItem obo:OBI_0000293 ?chemEnt. # has specified input some ?chemEnt
+   ?chemEnt a obo:CHEBI_24431;  # ?chemEnt a chemical entity 
+          rdf:type [owl:complementOf obo:GO_0042571]; # ?chemEnt is not a immunoglobulin complex, circulating 
+          obo:RO_0000053 ?role. # ?chemEn is the bearer of ?role
+   ?role a obo:CHEBI_35222.     # ?role is an inhibitor
+'''
+
+SPARQL_NOT_INVOLVES_CHEMICAL_INHIBITOR = '''
+ FILTER NOT EXISTS {
+   ?aItem obo:OBI_0000293 ?chemEnt. # has specified input some ?chemEnt
+   ?chemEnt a obo:CHEBI_24431;  # ?chemEnt a chemical entity 
+          rdf:type [owl:complementOf obo:GO_0042571]; # ?chemEnt is not a immunoglobulin complex, circulating 
+          obo:RO_0000053 ?role. # ?chemEn is the bearer of ?role
+   ?role a obo:CHEBI_35222.     # ?role is an inhibitor
+ }
+'''
+
 ### END of in vitro metabolism experiments
 
 ### START of in vitro transport experiments
@@ -539,6 +587,18 @@ WHERE {
         elif data['ex-ev-mt-question-4'] == 'no':
             q = q + SPARQL_NOT_INVOLVES_CYP450
 
+        if data['ex-ev-mt-question-2'] == 'humanTissue':
+            q = q + SPARQL_INVOLVES_HUMAN_MICROSOMES
+        elif data['ex-ev-mt-question-2'] == 'cellLine':
+            q = q + SPARQL_INVOLVES_RECOMBINANT_SYSTEM
+
+        if data['ex-ev-mt-question-3'] == 'antibody':
+            q = q + SPARQL_INVOLVES_ANTIBODY_INHIBITOR
+        elif data['ex-ev-mt-question-3'] == 'chemical':
+            q = q + SPARQL_INVOLVES_CHEMICAL_INHIBITOR
+        elif data['ex-ev-mt-question-3'] == 'none':
+            q = q + SPARQL_NOT_INVOLVES_ANTIBODY_INHIBITOR + SPARQL_NOT_INVOLVES_CHEMICAL_INHIBITOR
+            
     if not data.get('ex-tp-ev-question-1'):
         print "INFO: skipping in vitro transport questions"
     else:
