@@ -122,63 +122,76 @@ SPARQL_REPORT_NOT_EVALUATED_FOR_CAUSALITY = '''
 ### END of case report instance query parts
 
 ### START of clinical trial instance query parts
-SPARQL_NO_RANDOMIZATION = '''
-    ?gItem a owl:NegativePropertyAssertion;
-              owl:sourceIndividual ?aItem;
-              owl:targetIndividual obo:OBI_0302900. # an assay item is the source individual for a negative property assertion about group randomization   
-'''
 SPARQL_RANDOMIZATION = '''
     ?aItem obo:BFO_0000051 ?pItem. # has_part
-
     ?pItem a obo:OBI_0302900. # group randomization design
+'''
+
+SPARQL_NO_RANDOMIZATION = '''
+   ?gItem a owl:NegativePropertyAssertion;
+           owl:sourceIndividual ?aItem;
+           owl:targetIndividual obo:OBI_0302900. # an assay item is the source individual for a negative property assertion about group randomization
 '''
 
 SPARQL_PAR_GROUPS = '''
 
-?aItem obo:BFO_0000055 ?rItem. # the assay realizes a design
-?rItem a obo:BFO_0000017; 
-     obo:RO_0000059 ?cItem. # the realizable entity concretizes a clinical study design 
-?cItem a obo:OBI_0500001;
+   ?aItem obo:BFO_0000055 ?rItem. # the assay realizes a design
+   ?rItem a obo:BFO_0000017; 
+       obo:RO_0000059 ?cItem. # the realizable entity concretizes a clinical study design 
+   ?cItem a obo:OBI_0500001;
        obo:BFO_0000051 ?pItem. # the clinical study design has_part
-?pItem a obo:OBI_0500006. # parallel group design
+   ?pItem a obo:OBI_0500006. # parallel group design
+
+'''
+
+SPARQL_NOT_PAR_GROUPS = '''
+
+ FILTER NOT EXISTS { 
+   ?aItem obo:BFO_0000055 ?rItem. # the assay realizes a design
+   ?rItem a obo:BFO_0000017; 
+      obo:RO_0000059 ?cItem. # the realizable entity concretizes a clinical study design 
+   ?cItem a obo:OBI_0500001;
+     obo:BFO_0000051 ?pItem. # the clinical study design has_part
+   ?pItem a obo:OBI_0500006. # parallel group design
+ }
 
 '''
 
 SPARQL_PK = '''
 
-?aItem obo:OBI_0000293 ?dItem1. # has specified input some drug
-?dItem1 a obo:CHEBI_24431. # CHEBI chemical entity
+   ?aItem obo:OBI_0000293 ?dItem1. # has specified input some drug
+   ?dItem1 a obo:CHEBI_24431. # CHEBI chemical entity
 
-?aItem obo:OBI_0000293 ?oItem1. # has specified input some organism 
-?oItem1 a obo:OBI_0100026; # dideo:organism
+   ?aItem obo:OBI_0000293 ?oItem1. # has specified input some organism 
+   ?oItem1 a obo:OBI_0100026; # dideo:organism
              obo:RO_0000056 ?pItem1. # participates_in
-?pItem1 a obo:DIDEO_00000052. # dideo:pharmacokinetic process
+   ?pItem1 a obo:DIDEO_00000052. # dideo:pharmacokinetic process
 
 '''
 
 SPARQL_NOT_PK = '''
 
-?aItem obo:OBI_0000293 ?dItem1. # has specified input some drug
-?dItem1 a obo:CHEBI_24431. # CHEBI chemical entity
+  ?aItem obo:OBI_0000293 ?dItem1. # has specified input some drug
+  ?dItem1 a obo:CHEBI_24431. # CHEBI chemical entity
 
-?aItem obo:OBI_0000293 ?dItem2.FILTER(?dItem1 != ?dItem2) # has specified input some other drug
-?dItem2 a obo:CHEBI_24431. # CHEBI chemical entity
-
-FILTER NOT EXISTS {
-?aItem obo:OBI_0000293 ?oItem1. # has specified input some organism 
-?oItem1 a obo:OBI_0100026; # dideo:organism
+  ?aItem obo:OBI_0000293 ?dItem2.FILTER(?dItem1 != ?dItem2) # has specified input some other drug
+  ?dItem2 a obo:CHEBI_24431. # CHEBI chemical entity
+ 
+  FILTER NOT EXISTS {
+   ?aItem obo:OBI_0000293 ?oItem1. # has specified input some organism 
+   ?oItem1 a obo:OBI_0100026; # dideo:organism
              obo:RO_0000056 ?pItem1. # participates_in
-?pItem1 a obo:DIDEO_00000052. # dideo:pharmacokinetic process
-}
+   ?pItem1 a obo:DIDEO_00000052. # dideo:pharmacokinetic process
+  } 
 
 '''
 
 SPARQL_PHENOTYPE = '''
 
-?aItem obo:OBI_0000293 ?oItem2. # has specified input some organism 
-?oItem2 a obo:OBI_0100026; # organism
-       obo:RO_0000056 ?pItem2. # participates_in
-?pItem2 a obo:ERO_0000923. # phenotype characterization
+  ?aItem obo:OBI_0000293 ?oItem2. # has specified input some organism 
+  ?oItem2 a obo:OBI_0100026; # organism
+        obo:RO_0000056 ?pItem2. # participates_in
+  ?pItem2 a obo:ERO_0000923. # phenotype characterization
 
 '''
 
@@ -691,6 +704,9 @@ WHERE {
         if data['ct-ev-question-2'] == 'yes':
             q = q + SPARQL_PAR_GROUPS
 
+        elif data['ct-ev-question-2'] == 'no':
+            q = q + SPARQL_NOT_PAR_GROUPS
+            
         # examining pharmacokinetics?
         if data['ct-ev-question-3'] == 'yes':
             q = q + SPARQL_PK
