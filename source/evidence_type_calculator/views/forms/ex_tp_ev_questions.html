@@ -2,7 +2,7 @@
 <table style="width:100%">
   
   <tr><td style="width:40%">
-      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Subtype? </label></td>
+      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Mechanism? </label><a data-toggle="modal" href="#tp-definitions"> (info)</a></td>
     <td style="width:15%"><label class="radio-inline">
         <input name="ex-tp-ev-question-1" type="radio" ng-model="myVar" value="inhibition">Inhibition
     </label></td>
@@ -17,7 +17,7 @@
           
   <tr>
     <td style="width:40%">
-      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label></td>
+      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Assay Type? </label><a data-toggle="modal" href="#tp-definitions"> (info)</a></td>
     <td style="width:15%"><label class="radio-inline">
         <input name="ex-tp-ev-question-2" type="radio" ng-model="myVar" value="cacoTwoCellLines">Caco 2 Cell Lines
     </label></td>
@@ -32,7 +32,7 @@
           
   <tr>
     <td style="width:40%">
-      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Transporter Protein? </label></td>
+      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Transporter Protein? </label><a data-toggle="modal" href="#tp-definitions"> (info)</a></td>
     <td style="width:15%"><label class="radio-inline">
         <input name="ex-tp-ev-question-3" type="radio" ng-model="myVar" value="pGlycoprotein">P-Glycoprotein
     </label></td>
@@ -50,3 +50,37 @@
 </table>          
 
 <button type="button" class="btn btn-default" id="calculate-tp-ev" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','ex-tp-ev-question-1', 'ex-tp-ev-question-2', 'ex-tp-ev-question-3'], ':eval');">Calculate</button>	
+
+
+<!-- Modal -->
+<div id="tp-definitions" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Drug transport experiment feature definitions </h4>
+      </div>
+      <div class="modal-body">
+        <p><b>Inhibition (negative regulation):</b> Any process that stops, prevents, or reduces the frequency, rate or extent of the chemical reactions and pathways within a cell or an organism. <a target=_blank href="http://purl.obolibrary.org/obo/GO_0009892"> See in Ontobee</a></p>
+
+	<p><b>Identification of transport process:</b> Experimental characterization of the directed movement of some substance from outside of a cell, across the plasma membrane and into the cytosol. <a target=_blank href="http://purl.obolibrary.org/obo/GO_0098739"> See in Ontobee</a></p>
+
+	<p><b>Cell lines:</b> A cultured cell that is part of a cell line - a stable and homogeneous population of cells with a common biological origin and propagation history in culture <a target=_blank href="http://purl.obolibrary.org/obo/CLO_0000001"> See in Ontobee</a></p>
+
+	<p><b>Caco 2 cell lines:</b> <a target=_blank href="http://purl.obolibrary.org/obo/CLO_0002172"> See in Ontobee</a></p>
+
+	<p><b>Overexpression:</b> A gene expression that has increased volume. <a target=_blank href="http://purl.obolibrary.org/obo/INO_0000114"> See in Ontobee</a></p>
+
+	<p><b>P-Glycoprotein (multidrug resistance protein 1):</b> <a target=_blank href="http://purl.obolibrary.org/obo/PR_000001891"> See in Ontobee</a></p>
+
+	<p><b>OATP1B1 (solute carrier organic anion transporter family member 1B1):</b> <a target=_blank href="http://purl.obolibrary.org/obo/PR_000015223"> See in Ontobee</a></p>
+
+	<p><b>OATP1B3 (solute carrier organic anion transporter family member 1B3):</b> <a target=_blank href="http://purl.obolibrary.org/obo/PR_000015224"> See in Ontobee</a></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

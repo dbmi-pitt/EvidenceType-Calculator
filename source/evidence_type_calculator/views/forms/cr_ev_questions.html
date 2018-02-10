@@ -1,7 +1,7 @@
 <h5>Does this evidence type include...</h5><br>
 <!-- Reporting an adverse event -->
 <table style="width:100%">
-  <tr><td style="width:50%"><label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Reporting an adverse drug event? </label></td> 
+  <tr><td style="width:50%"><label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Reporting an adverse drug event? </label><a data-toggle="modal" href="#cr-definitions"> (info)</a></td> 
     <td style="width:20%">
       <label class="radio-inline">
 	<input name="cr-ev-question-1" type="radio" ng-model="myVar" value="yes">Yes</label>
@@ -15,7 +15,7 @@
 
   <!-- Publically reported -->
   <tr><td style="width:50%">
-      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Publicly (spontaneously) reported? </label> </td>
+      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Publicly (spontaneously) reported? </label><a data-toggle="modal" href="#cr-definitions"> (info)</a></td>
     <td style="width:20%"><label class="radio-inline">
 	<input name="cr-ev-question-2" type="radio" ng-model="myVar" value="yes">Yes
     </label></td>
@@ -28,7 +28,7 @@
 
     <!-- Involves a drug-drug interaction -->
   <tr><td style="width:50%">
-      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Involves a suspected drug-drug interaction? </label> </td>
+      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Involves a suspected drug-drug interaction? </label><a data-toggle="modal" href="#cr-definitions"> (info)</a></td>
     <td style="width:20%"><label class="radio-inline">
 	<input name="cr-ev-question-4" type="radio" ng-model="myVar" value="yes">Yes
     </label></td>
@@ -41,7 +41,7 @@
 
   <!-- Following an evaluation protocol --> 
   <tr><td style="width:50%">
-      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Was an evaluation of adverse event causality conducted? </label> </td>
+      <label data-toggle="tooltip" data-placement="right" title="Tooltip on right"> Was an evaluation of adverse event causality conducted? </label><a data-toggle="modal" href="#cr-definitions"> (info)</a></td>
     <td style="width:20%"><label class="radio-inline">
 	<input name="cr-ev-question-3" type="radio" ng-model="myVar" value="yes">Yes
     </label></td>
@@ -54,4 +54,30 @@
 </table>
 
 <button type="button" class="btn btn-default" id="calculate-cr" onclick="ajax('saveEvidenceTypeQuestions', ['evidencetype','cr-ev-question-1','cr-ev-question-2','cr-ev-question-4','cr-ev-question-3'], ':eval');">Calculate</button>
+
+<!-- Modal -->
+<div id="cr-definitions" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Case report feature definitions </h4>
+      </div>
+      <div class="modal-body">
+        <p><b>Adverse drug event:</b> An <a target=_blank href="http://purl.obolibrary.org/obo/OAE_0000001">adverse event</a> that occurs after a drug administration. <a target=_blank href="http://purl.obolibrary.org/obo/OAE_0000005">See in Ontobee</a></p>
+
+	<p><b>Public (spontaneous) reporting database:</b> A data set that is structured and stored on a computer and that is publicly available and contains reports of adverse events. <a target=_blank href="http://purl.obolibrary.org/obo/DIDEO_00000082">See in Ontobee</a></p>
+
+	<p><b>Drug-drug interaction:</b> A biological process that results in a clinically meaningful change to the response of at least one co-administrated drug. <a target=_blank href="http://purl.obolibrary.org/obo/DIDEO_00000020">See in Ontobee</a></p>
+
+	<p><b>Adverse drug reaction causality evalutation:</b> A protocol that specifies methodology to assess the likelihood of a drug to be the cause for an adverse event by answering a set of questions about the drug reaction report. <a target=_blank href="http://purl.obolibrary.org/obo/DIDEO_00000087">See in Ontobee</a></p>
+	
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
