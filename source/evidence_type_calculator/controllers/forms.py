@@ -532,11 +532,20 @@ def saveEvidenceTypeQuestions():
             
         # evidence type inference
         ietTpl = getInferredEvType(request.vars)
-        ietDefandNotes = ietTpl[1]
+        evType = ietTpl[0]
+        if ietTpl[1] == "":
+            ietDefandNotes = ""
+        else:
+            ietDefandNotes = "<i>Definition:</i> " + ietTpl[1]
         if ietTpl[2] != "":
-            ietDefandNotes += "<br><i>Notes:</i>" + ietTpl[2]
+            ietDefandNotes += "<br><i>Notes:</i> " + ietTpl[2]
+        ietCount = ietTpl[3]
+
+        if ietCount > 1:
+            evType = " There are %s evidence types that match the specific values you entered. Please revise your selections or click the 'Disagree' button below to manually select an evidence type." % str(ietCount)
+            ietDefandNotes = "<br><i>Suggestion:</i> The 'info' links next to each question provide definitions intended to help make selections."
             
-        r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s");jQuery("#inferred-evidencetype-def").html("<i>Definition:</i> %s");$("#calculate").hide();' % (ietTpl[0], ietDefandNotes)
+        r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s");jQuery("#inferred-evidencetype-def").html(" %s");$("#calculate").hide();' % (evType, ietDefandNotes)
 
         return r
 
@@ -761,34 +770,49 @@ WHERE {
             q = q + SPARQL_METABOLISM_INHIBITION
         elif data['ex-ev-mt-question-1'] == 'identification':
             q = q + SPARQL_METABOLISM_IDENTIFICATION
-        elif data['ex-ev-mt-question-1'] == 'unsure':
-            q = q + SPARQL_NOT_METABOLISM_INHIBITION + SPARQL_NOT_METABOLISM_IDENTIFICATION
 
             
         if data['ex-ev-mt-question-4'] == 'yes':
             q = q + SPARQL_INVOLVES_CYP450
         elif data['ex-ev-mt-question-4'] == 'no':
             q = q + SPARQL_NOT_INVOLVES_CYP450
-        elif data['ex-ev-mt-question-4'] == 'unsure':
-            q = q + SPARQL_NOT_INVOLVES_CYP450
 
             
         if data['ex-ev-mt-question-2'] == 'humanTissue':
-            q = q + SPARQL_INVOLVES_HUMAN_MICROSOMES
+            if data['ex-ev-mt-question-4'] == 'no':
+                inferenceNotes += "  Questions will be included to help you assess the use of human tissue in a metabolic mechanism identification experiment that are NOT focused on CYP450 enzymes."
+            else:
+                q = q + SPARQL_INVOLVES_HUMAN_MICROSOMES
         elif data['ex-ev-mt-question-2'] == 'cellLine':
-            q = q + SPARQL_INVOLVES_RECOMBINANT_SYSTEM
-        elif data['ex-ev-mt-question-2'] == 'unsure':
-            q = q  # Could be either so we can't use NOT
-
+            if data['ex-ev-mt-question-4'] == 'no':
+                inferenceNotes += "  Questions will be included to help you assess the use of recombinant cell lines in a metabolic mechanism identification experiment that are NOT focused on CYP450 enzymes."
+            else:
+                q = q + SPARQL_INVOLVES_RECOMBINANT_SYSTEM
             
         if data['ex-ev-mt-question-3'] == 'antibody':
-            q = q + SPARQL_INVOLVES_ANTIBODY_INHIBITOR
+            if data['ex-ev-mt-question-1'] != 'identification':
+                q = q + SPARQL_INVOLVES_ANTIBODY_INHIBITOR
+                if data['ex-ev-mt-question-4'] == 'yes' and data['ex-ev-mt-question-2'] == 'unsure':
+                    inferenceNotes += " The evidence type ontology requires that CYP450 inhibition studies specify either human tissues or recombinant cell lines."
+                if data['ex-ev-mt-question-1'] == 'inhibition':
+                    inferenceNotes += " You selected that the mechanistic focus of the experiment is 'inhibition'. The evidence type ontology assumes that the use antibody inhibition applies only to metabolism mechanism identification experiments."
+            else:
+                q = q + SPARQL_NOT_INVOLVES_ANTIBODY_INHIBITOR + SPARQL_NOT_INVOLVES_CHEMICAL_INHIBITOR
+                inferenceNotes += "  Questions will be included to help you assess the use of an antibody inhibitor in a metabolic mechanism identification experiment."
+                
         elif data['ex-ev-mt-question-3'] == 'chemical':
-            q = q + SPARQL_INVOLVES_CHEMICAL_INHIBITOR
+            if data['ex-ev-mt-question-1'] != 'identification':
+                q = q + SPARQL_INVOLVES_CHEMICAL_INHIBITOR
+                if data['ex-ev-mt-question-4'] == 'yes' and data['ex-ev-mt-question-2'] == 'unsure':
+                    inferenceNotes += " The evidence type ontology requires that CYP450 inhibition studies specify either human tissues or recombinant cell lines."
+                if data['ex-ev-mt-question-1'] == 'inhibition':
+                    inferenceNotes += " You selected that the mechanistic focus of the experiment is 'inhibition'. The evidence type ontology assumes that the use chemical inhibition applies only to metabolism mechanism identification experiments."
+            else:
+                q = q + SPARQL_NOT_INVOLVES_ANTIBODY_INHIBITOR + SPARQL_NOT_INVOLVES_CHEMICAL_INHIBITOR
+                inferenceNotes += "  Questions will be included to help you assess the use of an chemical inhibitor in a metabolic mechanism identification experiment."
+                
         elif data['ex-ev-mt-question-3'] == 'none':
             q = q + SPARQL_NOT_INVOLVES_ANTIBODY_INHIBITOR + SPARQL_NOT_INVOLVES_CHEMICAL_INHIBITOR
-        elif data['ex-ev-mt-question-3'] == 'unsure':
-            q = q + SPARQL_NOT_INVOLVES_ANTIBODY_INHIBITOR + SPARQL_NOT_INVOLVES_CHEMICAL_INHIBITOR            
             
     if not data.get('ex-tp-ev-question-1'):
         print "INFO: skipping in vitro transport questions"
@@ -827,15 +851,17 @@ WHERE {
     qr = tstore.query().convert()
     etRslt = ""
     definition = ""
+    evTypeCnt = 0
     
     if len(qr["results"]["bindings"]) == 0:
         print "results from sparql query is none "
-        etRslt = "No evidence type matching the chosen characteristics"
+        etRslt = "No evidence type matching the chosen characteristics. Please revise your selections or click the 'Disagree' button below to manually select an evidence type."
     else:
         print "results: %s" % qr
         evTypeData = [{"evItem":x["evItem"]["value"] ,"label":x["label"]["value"],"evType":x["evType"]["value"],"definition":x["definition"]["value"]} for x in qr["results"]["bindings"]]
         print "evTypeData: %s" % evTypeData
         curEvItem = ""
+        evTypeCnt = len(evTypeData)
         for it in evTypeData:
             if it["evItem"] == curEvItem:
                 etRslt += "-->%s" % it["label"]
@@ -847,7 +873,7 @@ WHERE {
         if etRslt == "":
             etRslt = "ERROR: Couldn't infer evidence type"
             
-    inferred_evidence_type = (etRslt, definition, inferenceNotes)
+    inferred_evidence_type = (etRslt, definition, inferenceNotes, evTypeCnt)
     return inferred_evidence_type
 
 
