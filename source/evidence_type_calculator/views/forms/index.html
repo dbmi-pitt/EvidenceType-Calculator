@@ -89,8 +89,10 @@
 	<br><br>
 	<div id="inferred-evidencetype-div" style="display:none;">
 	  <label for="usr">Inferred evidence type:</label>
-	  <input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype">
-	  <p><div name="inferred-evidencetype-def" id="inferred-evidencetype-def"></p>
+	  <input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype"/>
+	  <!-- The input element needs to be changed to a textarea to avoid cutting off text but the textarea element messes up  the rest of the page for some reason -->
+	  <!-- <textarea name="inferred-evidencetype" rows="3" class="form-control" id="inferred-evidencetype"/> -->
+	  <p><div name="inferred-evidencetype-def" id="inferred-evidencetype-def"/></p>
 	</div>
 	<br>
 	

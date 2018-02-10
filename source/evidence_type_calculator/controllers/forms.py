@@ -836,10 +836,16 @@ WHERE {
             q = q + SPARQL_P_GLYCOPROTEIN
         elif data['ex-tp-ev-question-3'] == 'oatpOnebOne':
             q = q + SPARQL_OATP1B1
+            if data['ex-tp-ev-question-2'] == 'cacoTwoCellLines':
+                inferenceNotes += " You selected Caco 2 cell lines as the assay type of the experiment. This system is not generally used in experiments involving solute carrier organic anion transporter family members."
+
         elif data['ex-tp-ev-question-3'] == 'oatpOnebThree':
             q = q + SPARQL_OATP1B3
-        elif data['ex-tp-ev-question-3'] == 'unsure':
-            q = q + SPARQL_NOT_OATP1B1 + SPARQL_NOT_OATP1B3 + SPARQL_NOT_P_GLYCOPROTEIN
+            if data['ex-tp-ev-question-2'] == 'cacoTwoCellLines':
+                inferenceNotes += " You selected Caco 2 cell lines as the assay type of the experiment. This system is not generally used in experiments involving solute carrier organic anion transporter family members"
+
+        #elif data['ex-tp-ev-question-3'] == 'unsure':
+        #    q = q + SPARQL_NOT_OATP1B1 + SPARQL_NOT_OATP1B3 + SPARQL_NOT_P_GLYCOPROTEIN
             
     # close the query with a request for the matching evidence types 
     q = q + SPARQL_EV_TYPE + '''
@@ -855,7 +861,8 @@ WHERE {
     
     if len(qr["results"]["bindings"]) == 0:
         print "results from sparql query is none "
-        etRslt = "No evidence type matching the chosen characteristics. Please revise your selections or click the 'Disagree' button below to manually select an evidence type."
+        etRslt = "No evidence type matching the chosen characteristics."
+        inferenceNotes += "Please revise your selections or click the 'Disagree' button below to manually select an evidence type."
     else:
         print "results: %s" % qr
         evTypeData = [{"evItem":x["evItem"]["value"] ,"label":x["label"]["value"],"evType":x["evType"]["value"],"definition":x["definition"]["value"]} for x in qr["results"]["bindings"]]
