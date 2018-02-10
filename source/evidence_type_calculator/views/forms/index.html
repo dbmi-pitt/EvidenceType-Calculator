@@ -12,6 +12,9 @@
     <script>
       <!-- provides a simple prompt for the user to wait -->
       $(document).ajaxStart(function(){
+      // Hide previous evidence type inferences if they exist
+      $("#inferred-evidencetype-div").css("display","none");
+      $("#agree-with-inferred-div").css("display","none");
       // Show image container
       $("#loader").show();
       });

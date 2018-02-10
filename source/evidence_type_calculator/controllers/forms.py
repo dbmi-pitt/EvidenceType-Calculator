@@ -721,19 +721,34 @@ WHERE {
                 inferenceNotes += " Randomization is currently ignored in the definition of pharmacokinetic studies. "
             elif data['ct-ev-question-1'] == 'no':
                 q = q.replace(SPARQL_NO_RANDOMIZATION,'')
-                inferenceNotes += " Randomization is currently ignored in the definition of pharmacokinetic studies. "    
+                inferenceNotes += " Randomization is currently ignored in the definition of pharmacokinetic studies. "
+
+            if data['ct-ev-question-2'] == 'yes':
+                q = q.replace(SPARQL_PAR_GROUPS,'')
+                inferenceNotes += " Patient group assignment (e.g., parallel vs non-parallel) is currently ignored in the definition of pharmacokinetic studies. "
+            elif data['ct-ev-question-2'] == 'no':
+                q = q.replace(SPARQL_NOT_PAR_GROUPS,'')
+                inferenceNotes += " Patient group assignment (e.g., parallel vs non-parallel) is currently ignored in the definition of pharmacokinetic studies. "    
         elif data['ct-ev-question-3'] == 'no':
             q = q + SPARQL_NOT_PK
 
         # phenotyping done as part of the study?
         if data['ct-ev-question-4'] == 'yes':
-            q = q + SPARQL_PHENOTYPE
+            # phenotyping is a defining feature of PK studies but not DDI studies (TODO: consider changing this in the ev type definitions)
+            if data['ct-ev-question-3'] == 'yes':
+                q = q + SPARQL_PHENOTYPE
+            else:
+                inferenceNotes += " Questions will be included to help you assess the phenotyping aspect of the study. "
         elif data['ct-ev-question-4'] == 'no':
             q = q + SPARQL_NOT_PHENOTYPE
 
         # genotyping done as part of the study?
         if data['ct-ev-question-5'] == 'yes':
-            q = q + SPARQL_GENOTYPE
+            # genotyping is a defining feature of PK studies but not DDI studies (TODO: consider changing this in the ev type definitions)
+            if data['ct-ev-question-3'] == 'yes':
+                q = q + SPARQL_GENOTYPE
+            else:
+                inferenceNotes += " Questions will be included to help you assess the genotyping aspect of the study. "
         elif data['ct-ev-question-5'] == 'no':
             q = q + SPARQL_NOT_GENOTYPE
 
