@@ -531,9 +531,12 @@ def saveEvidenceTypeQuestions():
             
             
         # evidence type inference
-        inferred_evidence_type_tpl = getInferredEvType(request.vars)
-        
-        r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s");jQuery("#inferred-evidencetype-def").html("%s");$("#calculate").hide();' % (inferred_evidence_type_tpl[0],inferred_evidence_type_tpl[1])
+        ietTpl = getInferredEvType(request.vars)
+        ietDefandNotes = ietTpl[1]
+        if ietTpl[2] != "":
+            ietDefandNotes += "<br><i>Notes:</i>" + ietTpl[2]
+            
+        r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s");jQuery("#inferred-evidencetype-def").html("<i>Definition:</i> %s");$("#calculate").hide();' % (ietTpl[0], ietDefandNotes)
 
         return r
 
@@ -548,7 +551,7 @@ def isEvidenceTypeFormExists():
 
     
 def saveEvidenceTypeQuestionsHelper(mp_method, data, ev_form_id):
-    if mp_method == "DDI clinical trial":
+    if mp_method == "Clinical study":
         insertEvQuestionsByCodes(global_ct_ev_qs_codes, data, ev_form_id)        
     elif mp_method == "Case Report":
         insertEvQuestionsByCodes(global_cr_ev_qs_codes, data, ev_form_id)        
@@ -625,7 +628,7 @@ def saveInclusionCriteriaQuestions():
 
 
 def saveInclusionCriteriaQuestionsHelper(mp_method, data, ic_form_id):
-    if mp_method == "DDI clinical trial":
+    if mp_method == "Clinical study":
         insertIcQuestionsByCodes(global_ct_ic_qs_codes, data, ic_form_id)        
     elif mp_method == "Case Report":
         insertIcQuestionsByCodes(global_cr_ic_qs_codes, data, ic_form_id)        
@@ -649,6 +652,9 @@ def insertIcQuestionsByCodes(ui_codes, data, ic_form_id):
 def getInferredEvType(data):
     print "data as received by getInferredEvType: %s" % str(data)
 
+    # notes to pass on to the user to help with explanations
+    inferenceNotes = ""
+    
     # set RDF store connection
     tstore = SPARQLWrapper(SPARQL_HOST)
 
@@ -710,6 +716,12 @@ WHERE {
         # examining pharmacokinetics?
         if data['ct-ev-question-3'] == 'yes':
             q = q + SPARQL_PK
+            if data['ct-ev-question-1'] == 'yes':
+                q = q.replace(SPARQL_RANDOMIZATION,'')
+                inferenceNotes += " Randomization is currently ignored in the definition of pharmacokinetic studies. "
+            elif data['ct-ev-question-1'] == 'no':
+                q = q.replace(SPARQL_NO_RANDOMIZATION,'')
+                inferenceNotes += " Randomization is currently ignored in the definition of pharmacokinetic studies. "    
         elif data['ct-ev-question-3'] == 'no':
             q = q + SPARQL_NOT_PK
 
@@ -820,7 +832,7 @@ WHERE {
         if etRslt == "":
             etRslt = "ERROR: Couldn't infer evidence type"
             
-    inferred_evidence_type = (etRslt, definition)
+    inferred_evidence_type = (etRslt, definition, inferenceNotes)
     return inferred_evidence_type
 
 

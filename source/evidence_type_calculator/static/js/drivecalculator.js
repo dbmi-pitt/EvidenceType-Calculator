@@ -25,7 +25,7 @@ function hideForms() {
 function showEvidenceQuestionsByMethod(mp_method) {
     if (mp_method == "Case Report") { 
 	$("#caseReport").css("display","block");
-    } else if (mp_method == "DDI clinical trial") {
+    } else if (mp_method == "Clinical study") {
 	$("#clinicalTrial").css("display","block");		
     } else if (mp_method == "Metabolic Experiment") {
 	$("#metabolic").css("display","block");		
@@ -40,7 +40,7 @@ function showEvidenceQuestionsByMethod(mp_method) {
 function showInclusionCriteriaByMethod(mp_method) {
     if (mp_method == "Case Report")
         $("#cr-ic-questions-div").css("display","block");
-    else if (mp_method == "DDI clinical trial")
+    else if (mp_method == "Clinical study")
         $("#ct-ic-questions-div").css("display","block");
     else if (mp_method == "Metabolic Experiment")
         $("#ex-mt-ic-questions-div").css("display","block");
@@ -72,7 +72,7 @@ $(document).ready(function(){
 	e.preventDefault();
 	hideForms();
 	$("#clinicalTrial").css("display","block");
-	$("#evidencetype-value").attr("value","DDI clinical trial");
+	$("#evidencetype-value").attr("value","Clinical study");
 	ctStatus = true;
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
     });
