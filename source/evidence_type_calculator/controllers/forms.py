@@ -594,13 +594,12 @@ def agreeInferred():
     
     # db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], is_agree_with_inference = True)
 
-    incCritQL = getEvInclCrit(request.vars["inferred-evidencetype"])
-    print "inclCrQs: " % "\n".join(incCritQL)
+    incCritQL = getEvInclCrit(request.vars["inferred-evidencetype"])  
     
     # hide agree/disagree buttons, show inclusion criteria form
-    # print '[INFO] showing inclusion criteria for session.mp_method = ' + session.mp_method
-    # r = '$("#agree-with-inferred-div").css("display","none");showInclusionCriteriaByMethod("'+session.mp_method+'");' 
-    # return r
+    print '[INFO] showing inclusion criteria for session.mp_method = ' + session.mp_method
+    r = '$("#agree-with-inferred-div").css("display","none");showInclusionCriteriaByMethod("'+session.mp_method+'",%s);' % json.dumps(incCritQL) 
+    return r
 
 
 # save inferred and entered evidence type
@@ -699,6 +698,7 @@ UNION
     print "results: %s" % qr
     rgxSource = re.compile('Source:(.*) Link')
     rgxLink = re.compile('Link:(.*)}')
+    rgxAtag = re.compile('\((https://goo.gl/......)\) ')
     incCritQL = []
     for x in qr["results"]["bindings"]:
         nd = {"icRaw":x["ev_incl_cr"]["value"]}
@@ -706,7 +706,7 @@ UNION
         if len(spltL) != 2:
             print "ERROR: could not split on a question mark symbol - check the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
             return None        
-        nd["icText"] = spltL[0]
+        nd["icText"] = rgxAtag.sub(r'<a href="\1" target="new">\1</a> ', spltL[0])
 
         if not len(rgxSource.findall(spltL[1])) == 1:
             print "ERROR: could not extract source reference from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
@@ -720,8 +720,8 @@ UNION
 
         incCritQL.append(nd)
         
-    print "%s" % incCritQL 
-    
+    print "Inclusion criteria after extracting source ref and link: %s" % incCritQL 
+    return incCritQL
     
 # send sparql query to virtuoso endpoint for specific evidence type inference
 def getInferredEvType(data):

@@ -37,11 +37,25 @@ function showEvidenceQuestionsByMethod(mp_method) {
 }
 
 // show specific inclusion criteria form
-function showInclusionCriteriaByMethod(mp_method) {
+function showInclusionCriteriaByMethod(mp_method, incCritQL) {
     if (mp_method == "Case Report")
         $("#cr-ic-questions-div").css("display","block");
-    else if (mp_method == "Clinical study")
+    else if (mp_method == "Clinical study") {
         $("#ct-ic-questions-div").css("display","block");
+	var icdiv = document.getElementById("ct_ic_table_div");
+	var newHtml = '<table style="width:100%">'
+	for (var i = 0; i < incCritQL.length; i++) {
+	    var n = i+1
+	    newHtml += '<tr>'
+	    newHtml += '<td style="width:50%"><label data-toggle="tooltip" data-placement="right" title="Tooltip on right">' + n + '. ' +  incCritQL[i]["icText"] + '</label></td>'
+	    newHtml += '<td style="width:20%"><label class="radio-inline"><input type="radio" name="ct-ic-question-' + n + '" ng-model="myVar" value="yes">Yes</label></td>'
+	    newHtml += '<td style="width:20%"><label class="radio-inline"><input type="radio" name="ct-ic-question-' + n + '" ng-model="myVar" value="no">No</label></td>'
+	    newHtml += '<td style="width:20%"><label class="radio-inline"><input type="radio" name="ct-ic-question-' + n + '" ng-model="myVar" value="unsure">Unsure/NA</label></td>'
+	    newHtml += '</tr>'    
+	}
+	newHtml += '</table>'
+	icdiv.innerHTML = newHtml;
+    }
     else if (mp_method == "Metabolic Experiment")
         $("#ex-mt-ic-questions-div").css("display","block");
     else if (mp_method == "Transport Experiment")
