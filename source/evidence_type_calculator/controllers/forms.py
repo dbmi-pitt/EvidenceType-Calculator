@@ -592,11 +592,15 @@ def insertEvQuestionsByCodes(ui_codes, data, ev_form_id):
 def agreeInferred():
     print '[INFO] form controller save inferred evidence type...'
     
-    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], is_agree_with_inference = True)
+    # db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], is_agree_with_inference = True)
 
+    incCritQL = getEvInclCrit(request.vars["inferred-evidencetype"])
+    print "inclCrQs: " % "\n".join(incCritQL)
+    
     # hide agree/disagree buttons, show inclusion criteria form
-    r = '$("#agree-with-inferred-div").css("display","none");showInclusionCriteriaByMethod("'+session.mp_method+'");' 
-    return r
+    # print '[INFO] showing inclusion criteria for session.mp_method = ' + session.mp_method
+    # r = '$("#agree-with-inferred-div").css("display","none");showInclusionCriteriaByMethod("'+session.mp_method+'");' 
+    # return r
 
 
 # save inferred and entered evidence type
@@ -656,6 +660,41 @@ def insertIcQuestionsByCodes(ui_codes, data, ic_form_id):
             
             if question and answer:
                 db.icl_question.insert(icl_form_id=ic_form_id, ui_code=code, question=question, answer=answer)    
+
+# send sparql query to obtain all of the evidence inclusion criteria for the accepted evidence type and its parent classes 
+def getEvInclCrit(ev_type):
+    print "querying for all of the evidence inclusion criteria for the accepted evidence type and its parent classes: %s" % str(ev_type)
+    
+    # set RDF store connection
+    tstore = SPARQLWrapper(SPARQL_HOST)
+
+    # start building the evidence type query
+    q = '''
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+select distinct ?ev_incl_cr 
+where {
+ {
+  ?evType rdfs:label "%s"; 
+     <http://purl.obolibrary.org/obo/dideo.owl#DIDEO_EV_Inclusion_Criterion> ?ev_incl_cr;
+     rdfs:subClassOf ?parEvType.
+ }
+UNION
+ {
+  ?parEvType <http://purl.obolibrary.org/obo/dideo.owl#DIDEO_EV_Inclusion_Criterion> ?ev_incl_cr.
+ }
+}
+''' % ev_type.strip().strip("'")
+
+    print q
+    tstore.setQuery(q)
+    tstore.setReturnFormat(JSON)
+    qr = tstore.query().convert()
+
+    if len(qr["results"]["bindings"]) == 0:
+        print "results from sparql query is none "
+        evICRslt = "No inclusion criteria found!"
+    else:
+        print "results: %s" % qr
 
 # send sparql query to virtuoso endpoint for specific evidence type inference
 def getInferredEvType(data):

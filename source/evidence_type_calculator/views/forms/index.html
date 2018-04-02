@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="/evidence_type_calculator/static/js/jquery-3.2.1.min.js"></script>
     <!-- <script src="/evidence_type_calculator/static/js/jquery-3.3.1.min.js"></script> --> <!-- TODO: update to jquery-3.3.1 sometime. Currently triggers error b/c of 'button' class -->
@@ -24,185 +24,306 @@
       });  
     </script>
 
-</head>
+  </head>
 
-<body>   
-  <!-- Header bar -->
-  <div class="page-header">
-    <div class="container-fluid">
-      <h3>DRIVE <small>Evidence Calculator</small></h3>
+  <body>   
+    <!-- Header bar -->
+    <div class="page-header">
+      <div class="container-fluid">
+	<h3>DRIVE <small>Evidence Calculator</small></h3>
+      </div>
     </div>
-  </div>
-  <br>
-  <div class="panel panel-default">
-    <div class="panel-body">
+    <br>
+    <div class="panel panel-default">
+      <div class="panel-body">
 
-      <form name="evidence-question-form" enctype="multipart/form-data" method="post">
-	
-	<input id="evidencetype-value" value="" type="hidden" name="evidencetype" />
-	
-	<!-- high level evidence type -->
-        <div class="dropdown">
-          <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Evidence Type<span class="caret"></span></button>
-          <ul class="dropdown-menu">
-            <li><a tabindex="-1" href="#" id= "1">Case Report</a></li>
-            <li><a tabindex="-1" href="#" id= "2">Clinical study</a></li>
-            <li class="dropdown-submenu">
-              <a class="test" tabindex="-1" href="#">Experiment<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a tabindex="-1" href="#" id= "3">Metabolic Experiment</a></li>
-                <li><a tabindex="-1" href="#" id= "4">Transport Experiment</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-        <br>
+	<form name="evidence-question-form" enctype="multipart/form-data" method="post">
+	  
+	  <input id="evidencetype-value" value="" type="hidden" name="evidencetype" />
+	  
+	  <!-- high level evidence type -->
+          <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Evidence Type<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a tabindex="-1" href="#" id= "1">Case Report</a></li>
+              <li><a tabindex="-1" href="#" id= "2">Prospective Clinical study</a></li>
+              <li class="dropdown-submenu">
+		<a class="test" tabindex="-1" href="#">Experiment<span class="caret"></span></a>
+		<ul class="dropdown-menu">
+                  <li><a tabindex="-1" href="#" id= "3">Metabolic Experiment</a></li>
+                  <li><a tabindex="-1" href="#" id= "4">Transport Experiment</a></li>
+		</ul>
+              </li>
+            </ul>
+          </div>
+          <br>
 
-	<!-- Evidence type questions -->
-	<!-- Case report evidence questions -->
-        <div class= "radioform" style="display:none;" id='caseReport'>
-	  {{include 'forms/cr_ev_questions.html'}}
-        </div>
+	  <!-- Evidence type questions -->
+	  <!-- Case report evidence questions -->
+          <div class= "radioform" style="display:none;" id='caseReport'>
+	    {{include 'forms/cr_ev_questions.html'}}
+          </div>
 
-	<!-- DDI Clinical trial evidence questions -->
-	<div class= "radioform" style="display:none;" id='clinicalTrial'>
-	  {{include 'forms/ct_ev_questions.html'}}	    
-        </div>
+	  <!-- DDI Clinical trial evidence questions -->
+	  <div class= "radioform" style="display:none;" id='clinicalTrial'>
+	    {{include 'forms/ct_ev_questions.html'}}	    
+          </div>
 
-	<!-- Experiment metabolic evidence questions -->
-        <div class= "radioform" style="display:none;" id='metabolic'>
-	  {{include 'forms/ex_mt_ev_questions.html'}}	  	  
-        </div>
+	  <!-- Experiment metabolic evidence questions -->
+          <div class= "radioform" style="display:none;" id='metabolic'>
+	    {{include 'forms/ex_mt_ev_questions.html'}}	  	  
+          </div>
 
-	<!-- Experiment transport evidence questions -->
-	<div class= "radioform" style="display:none;" id='transport'>
-	  {{include 'forms/ex_tp_ev_questions.html'}}  
-        </div>
+	  <!-- Experiment transport evidence questions -->
+	  <div class= "radioform" style="display:none;" id='transport'>
+	    {{include 'forms/ex_tp_ev_questions.html'}}  
+          </div>
 
-	<!-- provide a simple prompt for the user to wait -->
-	<div id='loader' style='display: none;'>
-	  <h2>Please wait...</h2>
-	</div>
+	  <!-- provide a simple prompt for the user to wait -->
+	  <div id='loader' style='display: none;'>
+	    <h2>Please wait...</h2>
+	  </div>
 
 
-	<!-- Inferred evidence type -->
-	<br><br>
-	<div id="inferred-evidencetype-div" style="display:none;">
-	  <label for="usr">Inferred evidence type:</label>
-	  <input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype"/>
-	  <!-- The input element needs to be changed to a textarea to avoid cutting off text but the textarea element messes up  the rest of the page for some reason -->
-	  <!-- <textarea name="inferred-evidencetype" rows="3" class="form-control" id="inferred-evidencetype"/> -->
-	  <p><div name="inferred-evidencetype-def" id="inferred-evidencetype-def"/></p>
-	</div>
-	<br>
-	
-	<!-- Agree or disagree with inferred result -->
-	<br>
-	<div id="agree-with-inferred-div" style="display:none;">
-	  <button type="button" class="btn btn-default" id="ev-type-agree" onclick="ajax('agreeInferred', ['inferred-evidencetype'], ':eval');">Agree</button>
-	  <button type="button" class="btn btn-default" id="ev-type-disagree" onclick="">Disagree</button>
-	</div>
-	
-	<!-- Entered evidence type -->
-	<br>
-	<div id="entered-evidencetype-div" style="display:none;">
-	  <label for="usr">Enter evidence type:</label>
-	  <input name="entered-evidencetype" type="text" class="form-control" id="entered-evidencetype"> <br>
-	  <button type="button" class="btn btn-default" id="entered-evidencetype-submit" onclick="ajax('saveEnteredAndInferred', ['entered-evidencetype','inferred-evidencetype'], ':eval');">Submit</button>
-	</div>
+	  <!-- Inferred evidence type -->
+	  <br><br>
+	  <div id="inferred-evidencetype-div" style="display:none;">
+	    <label for="usr">Inferred evidence type:</label>
+	    <input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype"/>
+	    <!-- The input element needs to be changed to a textarea to avoid cutting off text but the textarea element messes up  the rest of the page for some reason -->
+	    <!-- <textarea name="inferred-evidencetype" rows="3" class="form-control" id="inferred-evidencetype"/> -->
+	    <div name="inferred-evidencetype-def" id="inferred-evidencetype-def"></div>
+	  </div>
+	  <br>
 
-	<!-- Inclusion criteria questions -->	
-	<!-- Case Report -->
-	<div id="cr-ic-questions-div" style="display:none;">
-	  {{include 'forms/cr_ic_questions.html'}}	  
-   	</div>
+	  <!-- Agree or disagree with inferred result -->
+	  <br>
+	  <div id="agree-with-inferred-div" style="display:none;">
+	    <button type="button" class="btn btn-default" id="ev-type-agree" onclick="ajax('agreeInferred', ['inferred-evidencetype'], ':eval');">Agree</button>
+	    <button type="button" class="btn btn-default" id="ev-type-disagree" onclick="">Disagree</button>
+	  </div>
 
-	<!-- Clinical study -->
-	<div id="ct-ic-questions-div" style="display:none;">
-	  {{include 'forms/ct_ic_questions.html'}}
-	</div>
+	  <!-- Entered evidence type -->
+	  <br>
+	  <div id="entered-evidencetype-div" style="display:none;">
+	    <label for="usr">Enter evidence type:</label>
+	    <input name="entered-evidencetype" type="text" class="form-control" id="entered-evidencetype"/> <br>
+	    <button type="button" class="btn btn-default" id="entered-evidencetype-submit" onclick="ajax('saveEnteredAndInferred', ['entered-evidencetype','inferred-evidencetype'], ':eval');">Submit</button>
+	  </div>
 
-	<!-- Experiment metabolic -->
-	<div id="ex-mt-ic-questions-div" style="display:none;">
-	  {{include 'forms/ex_mt_ic_questions.html'}}
-	</div>
+	  <!-- Inclusion criteria questions -->	
+	  <!-- Case Report -->
+	  <div id="cr-ic-questions-div" style="display:none;">
+	    {{include 'forms/cr_ic_questions.html'}}	  
+	  </div>
 
-	<!-- Experiment transport -->
-	<div id="ex-tp-ic-questions-div" style="display:none;">
-	  {{include 'forms/ex_tp_ic_questions.html'}}
-	</div>
+	  <!-- Clinical study -->
+	  <div id="ct-ic-questions-div" style="display:none;">
+	    {{include 'forms/ct_ic_questions.html'}}
+	  </div>
 
-	<!-- Inclusion criteria result -->
-	<br><br>
-	<div id="ic-div" style="display:none;">
-	  <label for="usr">Meet inclusion criteria? </label>
-	  <input name="ic-result" type="text" class="form-control" id="ic-result">
-	</div>
-	
-	<!-- Agree or disagree with inclusion criteria result -->
-	<br>
-	<div id="agree-with-ic-div" style="display:none;">
-	  <button type="button" class="btn btn-default" id="ic-agree" onclick="ajax('agreeInclusionCriteria');">Agree</button>
-	  <button type="button" class="btn btn-default" id="ic-disagree" onclick="ajax('disagreeInclusionCriteria');">Disagree</button>
-	</div>
+	  <!-- Experiment metabolic -->
+	  <div id="ex-mt-ic-questions-div" style="display:none;">
+	    {{include 'forms/ex_mt_ic_questions.html'}}
+	  </div>
 
-	<div id="ic-comment-div" style="display:none;">
-	  <label for="usr">Comment: </label>
-	  <input name="ic-comment" type="text" class="form-control" id="ic-comment">
-	  <button type="button" class="btn btn-default" id="finish-task" onclick="ajax('finishTask', ['ic-comment'], ':eval');">Finish</button>
-	</div>
-	
+	  <!-- Experiment transport -->
+	  <div id="ex-tp-ic-questions-div" style="display:none;">
+	    {{include 'forms/ex_tp_ic_questions.html'}}
+	  </div>
+
+	  <!-- Inclusion criteria result -->
+	  <br><br>
+	  <div id="ic-div" style="display:none;">
+	    <label for="usr">Meet inclusion criteria? </label>
+	    <input name="ic-result" type="text" class="form-control" id="ic-result"/>
+	  </div>
+
+	  <!-- Agree or disagree with inclusion criteria result -->
+	  <br>
+	  <div id="agree-with-ic-div" style="display:none;">
+	    <button type="button" class="btn btn-default" id="ic-agree" onclick="ajax('agreeInclusionCriteria');">Agree</button>
+	    <button type="button" class="btn btn-default" id="ic-disagree" onclick="ajax('disagreeInclusionCriteria');">Disagree</button>
+	  </div>
+
+	  <div id="ic-comment-div" style="display:none;">
+	    <label for="usr">Comment: </label>
+	    <input name="ic-comment" type="text" class="form-control" id="ic-comment"/>
+	    <button type="button" class="btn btn-default" id="finish-task" onclick="ajax('finishTask', ['ic-comment'], ':eval');">Finish</button>
+	  </div>
+
 	</form>
+      </div>
     </div>
-  </div>
-</body>
+    <!-- Modal -->
+    <div id="cr-definitions" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+	<!-- Modal content-->
+	<div class="modal-content">
+	  <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Case report feature definitions </h4>
+	  </div>
+	  <div class="modal-body">
+            <p><b>Adverse drug event:</b> An <a target=_blank href="http://purl.obolibrary.org/obo/OAE_0000001">adverse event</a> that occurs after a drug administration. <a target=_blank href="http://purl.obolibrary.org/obo/OAE_0000005">See in Ontobee</a></p>
 
-<script>
+	    <p><b>Public (spontaneous) reporting database:</b> A data set that is structured and stored on a computer and that is publicly available and contains reports of adverse events. <a target=_blank href="http://purl.obolibrary.org/obo/DIDEO_00000082">See in Ontobee</a></p>
 
-$(document).ready(function(){
+	    <p><b>Drug-drug interaction:</b> A biological process that results in a clinically meaningful change to the response of at least one co-administrated drug. <a target=_blank href="http://purl.obolibrary.org/obo/DIDEO_00000020">See in Ontobee</a></p>
+
+	    <p><b>Adverse drug reaction causality evalutation:</b> A protocol that specifies methodology to assess the likelihood of a drug to be the cause for an adverse event by answering a set of questions about the drug reaction report. <a target=_blank href="http://purl.obolibrary.org/obo/DIDEO_00000087">See in Ontobee</a></p>
+	    
+	  </div>
+	  <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	  </div>
+	</div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="ct-definitions" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+	<!-- Modal content-->
+	<div class="modal-content">
+	  <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Clinical study feature definitions </h4>
+	  </div>
+	  <div class="modal-body">
+            <p><b>Group Randomization:</b> A group assignment which relies on chance to assign materials to a group of materials in order to avoid bias in experimental set up. <a target=_blank href="http://purl.obolibrary.org/obo/OBI_0302900">See in Ontobee</a></p>
+
+	    <p><b>Parallel Group Design:</b> A parallel group design or independent measure design is a study design which uses unique experimental unit each experimental group, in other word no two individuals are shared between experimental groups, hence also known as parallel group design. Subjects of a treatment group receive a unique combination of independent variable values making up a treatment. <a target=_blank href="http://purl.obolibrary.org/obo/OBI_0500006">See in Ontobee</a></p>
+
+	    <p><b>Pharmacokinetic process:</b> A biological process that has as a participant a part of a drug product and includes absorption, distribution, metabolism and excretion of that substance. <a target=_blank href="http://purl.obolibrary.org/obo/DIDEO_00000052">See in Ontobee</a></p>
+
+	    <p><b>Phenotype characterization:</b> An organismal assay that involves characterization of a phenotype; any observable characteristic or trait of an organism: such as its morphology, development, biochemical or physiological properties, behavior, and products of behavior (such as a bird's nest). Phenotypes result from the expression of an organism's genes as well as the influence of environmental factors and the interactions between the two. <a target=_blank href="http://purl.obolibrary.org/obo/ERO_0000923">See in Ontobee</a></p>
+
+	    <p><b>Genotyping:</b> An assay in which variation in the genome is analysed. <a target=_blank href="http://www.ebi.ac.uk/efo/EFO_0000750">See in EMBL</a></p>
+	    
+	  </div>
+	  <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	  </div>
+	</div>
+      </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="mt-definitions" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+	<!-- Modal content-->
+	<div class="modal-content">
+	  <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Drug metabolism experiment feature definitions </h4>
+	  </div>
+	  <div class="modal-body">
+            <p><b>Inhibition (negative regulation)):</b> Any process that stops, prevents, or reduces the frequency, rate or extent of the chemical reactions and pathways within a cell or an organism. <a target=_blank href="http://purl.obolibrary.org/obo/GO_0009892"> See in Ontobee</a></p>
+
+	    <p><b>Identification of metabolic process:</b> Experimental characterization of the chemical reactions and pathways, including anabolism and catabolism, by which living organisms transform chemical substances. Metabolic processes typically transform small molecules, but also include macromolecular processes such as DNA repair and replication, and protein synthesis and degradation. <a target=_blank href="http://purl.obolibrary.org/obo/GO_0008152"> See in Ontobee</a></p>
+
+	    <p><b>CYP450 enzyme:</b> <a target=_blank href="http://purl.obolibrary.org/obo/CHEBI_38559"> See in Ontobee</a></p>
+
+	    <p><b>Human tissue assay:</b> An assay that uses a Human-derived anatomical part or substance arising from an organism. Examples of tissue specimen include tissue, organ, physiological system, blood, or body location (arm).<a target=_blank href="http://purl.obolibrary.org/obo/OBI_0001479"> See in Ontobee</a></p>
+
+	    <p><b>Recombinant cell line assay:</b> An assay that uses a cultured cell population that represents a genetically stable and homogenous population of cultured cells that shares a common propagation history (i.e. has been successively passaged together in culture).<a target=_blank href="http://purl.obolibrary.org/obo/CLO_0000031"> See in Ontobee</a></p>
+
+	    <p><b>Antibody:</b> An immunoglobulin complex that is secreted into extracellular space and found in mucosal areas or other tissues or circulating in the blood or lymph. In its canonical form, a circulating immunoglobulin complex is composed of two identical heavy chains and two identical light chains, held together by disulfide bonds. Some forms of are polymers of the basic structure and contain additional components such as J-chain and the secretory component.<a target=_blank href="http://purl.obolibrary.org/obo/GO_0042571"> See in Ontobee</a></p>
+
+	    <p><b>Chemical:</b> A chemical substance is a portion of matter of constant composition, composed of molecular entities of the same type or of different types. <a target=_blank href="http://purl.obolibrary.org/obo/CHEBI_24431"> See in Ontobee</a></p>
+	    
+	  </div>
+	  <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	  </div>
+	</div>
+      </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="tp-definitions" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+	<!-- Modal content-->
+	<div class="modal-content">
+	  <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Drug transport experiment feature definitions </h4>
+	  </div>
+	  <div class="modal-body">
+            <p><b>Inhibition (negative regulation):</b> Any process that stops, prevents, or reduces the frequency, rate or extent of the chemical reactions and pathways within a cell or an organism. <a target=_blank href="http://purl.obolibrary.org/obo/GO_0009892"> See in Ontobee</a></p>
+
+	    <p><b>Identification of transport process:</b> Experimental characterization of the directed movement of some substance from outside of a cell, across the plasma membrane and into the cytosol. <a target=_blank href="http://purl.obolibrary.org/obo/GO_0098739"> See in Ontobee</a></p>
+
+	    <p><b>Cell lines:</b> A cultured cell that is part of a cell line - a stable and homogeneous population of cells with a common biological origin and propagation history in culture <a target=_blank href="http://purl.obolibrary.org/obo/CLO_0000001"> See in Ontobee</a></p>
+
+	    <p><b>Caco 2 cell lines:</b> <a target=_blank href="http://purl.obolibrary.org/obo/CLO_0002172"> See in Ontobee</a></p>
+
+	    <p><b>Overexpression:</b> A gene expression that has increased volume. <a target=_blank href="http://purl.obolibrary.org/obo/INO_0000114"> See in Ontobee</a></p>
+
+	    <p><b>P-Glycoprotein (multidrug resistance protein 1):</b> <a target=_blank href="http://purl.obolibrary.org/obo/PR_000001891"> See in Ontobee</a></p>
+
+	    <p><b>OATP1B1 (solute carrier organic anion transporter family member 1B1):</b> <a target=_blank href="http://purl.obolibrary.org/obo/PR_000015223"> See in Ontobee</a></p>
+
+	    <p><b>OATP1B3 (solute carrier organic anion transporter family member 1B3):</b> <a target=_blank href="http://purl.obolibrary.org/obo/PR_000015224"> See in Ontobee</a></p>
+	  </div>
+	  <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	  </div>
+	</div>
+      </div>
+    </div>
+
+  </body>
+  
+  <script>
+
+    $(document).ready(function(){
     $.ajax({url: "loadEvidenceTypeQuestions"})
     .done(function(data) {
-	if (data && data !== "None") {
+    if (data && data !== "None") {
 
-	    jsonData = $.parseJSON(data);
-	    console.log(jsonData);
-	    
-	    mp_method = jsonData["mp_method"];
-	    questions = jsonData["questions"];
-	    inferred_ev = jsonData["inferred_evidence_type"];
-	    agree_inferred = jsonData["is_agree_with_inference"];
-	    entered_ev = jsonData["entered_evidence_type"];
-	    
-	    showEvidenceQuestionsByMethod(mp_method);
+    jsonData = $.parseJSON(data);
+    console.log(jsonData);
+    
+    mp_method = jsonData["mp_method"];
+    questions = jsonData["questions"];
+    inferred_ev = jsonData["inferred_evidence_type"];
+    agree_inferred = jsonData["is_agree_with_inference"];
+    entered_ev = jsonData["entered_evidence_type"];
+    
+    showEvidenceQuestionsByMethod(mp_method);
 
-	    // fill existing answers
-	    for (var uicode in questions) {
-		$("input[name='"+uicode+"'][value='"+questions[uicode]+"']").attr("checked", "checked");
-	    }
+    // fill existing answers
+    for (var uicode in questions) {
+    $("input[name='"+uicode+"'][value='"+questions[uicode]+"']").attr("checked", "checked");
+    }
 
-	    // show and fill inferred evidence type and entered evidence type
-	    if (inferred_ev && inferred_ev !== "None") {
-		$("#inferred-evidencetype-div").css("display","block");
-		$("#inferred-evidencetype").val(inferred_ev);
+    // show and fill inferred evidence type and entered evidence type
+    if (inferred_ev && inferred_ev !== "None") {
+    $("#inferred-evidencetype-div").css("display","block");
+    $("#inferred-evidencetype").val(inferred_ev);
 
-		if (agree_inferred != 'T' && agree_inferred != 'F') { // filled agreement
-		    $("agree-with-inferred-div").css("display","block")
-		} else {
-		    if (agree_inferred == 'F') { // not user entered
-			$("#entered-evidencetype-div").css("display","block");
-			if (entered_ev && entered_ev !== "None") {
-			    $("#entered-evidencetype").val(entered_ev);
-			    showInclusionCriteriaByMethod(mp_method);
-			}			
-		    } else {
-			showInclusionCriteriaByMethod(mp_method);
-		    }
-		    
-		}	
-	    }
-	}
+    if (agree_inferred != 'T' && agree_inferred != 'F') { // filled agreement
+    $("agree-with-inferred-div").css("display","block")
+    } else {
+    if (agree_inferred == 'F') { // not user entered
+    $("#entered-evidencetype-div").css("display","block");
+    if (entered_ev && entered_ev !== "None") {
+    $("#entered-evidencetype").val(entered_ev);
+    showInclusionCriteriaByMethod(mp_method);
+    }			
+    } else {
+    showInclusionCriteriaByMethod(mp_method);
+    }
+    
+    }	
+    }
+    }
     });
-});
-</script>
-
+    });
+  </script>
+  
 </html>
