@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
+import json, re
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 ### START SPARQL header
@@ -693,9 +693,36 @@ UNION
     if len(qr["results"]["bindings"]) == 0:
         print "results from sparql query is none "
         evICRslt = "No inclusion criteria found!"
-    else:
-        print "results: %s" % qr
+        return None
 
+    # else, translate the returned IC into something presentable
+    print "results: %s" % qr
+    rgxSource = re.compile('Source:(.*) Link')
+    rgxLink = re.compile('Link:(.*)}')
+    incCritQL = []
+    for x in qr["results"]["bindings"]:
+        nd = {"icRaw":x["ev_incl_cr"]["value"]}
+        spltL = x["ev_incl_cr"]["value"].split('?')
+        if len(spltL) != 2:
+            print "ERROR: could not split on a question mark symbol - check the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            return None        
+        nd["icText"] = spltL[0]
+
+        if not len(rgxSource.findall(spltL[1])) == 1:
+            print "ERROR: could not extract source reference from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            return None        
+        nd["icSourceRef"] = rgxSource.findall(spltL[1])[0].strip()
+
+        if not len(rgxLink.findall(spltL[1])) == 1:
+            print "ERROR: could not extract reference link from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            return None
+        nd["icSourceLink"] = rgxLink.findall(spltL[1])[0].strip()
+
+        incCritQL.append(nd)
+        
+    print "%s" % incCritQL 
+    
+    
 # send sparql query to virtuoso endpoint for specific evidence type inference
 def getInferredEvType(data):
     print "data as received by getInferredEvType: %s" % str(data)
