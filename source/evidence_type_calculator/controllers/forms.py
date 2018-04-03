@@ -696,9 +696,11 @@ UNION
 
     # else, translate the returned IC into something presentable
     print "results: %s" % qr
-    rgxSource = re.compile('Source:(.*) Link')
-    rgxLink = re.compile('Link:(.*)}')
-    rgxAtag = re.compile('\((https://goo.gl/......)\) ')
+    rgxSource = re.compile(r'Source:([^;]+);')
+    rgxLink = re.compile(r'Link:([^;]+);')
+    rgxId = re.compile(r'ID:([^;]+);')
+    rgxGroup = re.compile(r'Group:([^;]+);')
+    rgxAtag = re.compile(r'\((https://goo.gl/......)\) ')
     incCritQL = []
     for x in qr["results"]["bindings"]:
         nd = {"icRaw":x["ev_incl_cr"]["value"]}
@@ -706,17 +708,31 @@ UNION
         if len(spltL) != 2:
             print "ERROR: could not split on a question mark symbol - check the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
             return None        
-        nd["icText"] = rgxAtag.sub(r'<a href="\1" target="new">\1</a> ', spltL[0])
+        nd["icText"] = rgxAtag.sub(r'<a href="\1" target="new">\1</a> ', spltL[0]) + '?'
 
-        if not len(rgxSource.findall(spltL[1])) == 1:
+        m = rgxId.search(spltL[1])
+        if not m.group():
+            print "ERROR: could not extract ID from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            return None        
+        nd["icID"] = m.group(1).strip()
+
+        m = rgxGroup.search(spltL[1])
+        if not m.group():
+            print "ERROR: could not extract Group from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            return None        
+        nd["icGroup"] = m.group(1).strip()
+
+        m = rgxSource.search(spltL[1])
+        if not m.group():
             print "ERROR: could not extract source reference from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
             return None        
-        nd["icSourceRef"] = rgxSource.findall(spltL[1])[0].strip()
+        nd["icSourceRef"] = m.group(1).strip()
 
-        if not len(rgxLink.findall(spltL[1])) == 1:
+        m = rgxLink.search(spltL[1])
+        if not m.group():
             print "ERROR: could not extract reference link from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
             return None
-        nd["icSourceLink"] = rgxLink.findall(spltL[1])[0].strip()
+        nd["icSourceLink"] = m.group(1).strip()
 
         incCritQL.append(nd)
         

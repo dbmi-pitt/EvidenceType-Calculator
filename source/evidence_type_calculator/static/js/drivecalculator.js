@@ -44,10 +44,11 @@ function showInclusionCriteriaByMethod(mp_method, incCritQL) {
         $("#ct-ic-questions-div").css("display","block");
 	var icdiv = document.getElementById("ct_ic_table_div");
 	var newHtml = '<table style="width:100%">'
+	var n = i
 	for (var i = 0; i < incCritQL.length; i++) {
-	    var n = i+1
+	    n = i + 1
 	    newHtml += '<tr>'
-	    newHtml += '<td style="width:50%"><label data-toggle="tooltip" data-placement="right" title="Tooltip on right">' + n + '. ' +  incCritQL[i]["icText"] + '</label></td>'
+	    newHtml += '<td style="width:50%"><label data-toggle="tooltip" data-placement="right" title="Tooltip on right">' + n + '. ' +  incCritQL[i]["icText"] + '</label><a target="new" href="../static/pdf/FDA-2017-guidance-on-clinical-DDI-evalutations-UCM292362.pdf#nameddest=' + incCritQL[i]["icSourceRef"].replace(/ /g,"") + '"> (info)</a></td>'
 	    newHtml += '<td style="width:20%"><label class="radio-inline"><input type="radio" name="ct-ic-question-' + n + '" ng-model="myVar" value="yes">Yes</label></td>'
 	    newHtml += '<td style="width:20%"><label class="radio-inline"><input type="radio" name="ct-ic-question-' + n + '" ng-model="myVar" value="no">No</label></td>'
 	    newHtml += '<td style="width:20%"><label class="radio-inline"><input type="radio" name="ct-ic-question-' + n + '" ng-model="myVar" value="unsure">Unsure/NA</label></td>'
