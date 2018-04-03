@@ -617,8 +617,8 @@ def saveEnteredAndInferred():
 ## save inclusion criteria questions to table icl_form, icl_question
 def saveInclusionCriteriaQuestions():
     print '[INFO] form controller save inclusion criteria questions...'
-    print request.vars
-    session.mp_method = request.vars.evidencetype
+    print '[INFO] request.vars: %s' % request.vars
+    session.mp_method = request.vars.confirmedEvType
 
     ic_form_id = db.icl_form.insert(is_started=True, is_finished=True)
     session.ic_form_id = ic_form_id
@@ -649,7 +649,7 @@ def saveInclusionCriteriaQuestionsHelper(mp_method, data, ic_form_id):
     elif mp_method == "Transport Experiment":
         insertIcQuestionsByCodes(global_ex_tp_ic_qs_codes, data, ic_form_id)
     else:
-        print "[ERROR] evidence type undefined (%s)" % mp_method
+        print "[ERROR - saveInclusionCriteriaQuestionsHelper] evidence type undefined (%s)" % mp_method
     
                 
 def insertIcQuestionsByCodes(ui_codes, data, ic_form_id):
@@ -708,7 +708,7 @@ UNION
         if len(spltL) != 2:
             print "ERROR: could not split on a question mark symbol - check the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
             return None        
-        nd["icText"] = rgxAtag.sub(r'<a href="\1" target="new">\1</a> ', spltL[0]) + '?'
+        nd["icText"] = rgxAtag.sub(r'<a href="\1" target="new">\1</a> ', spltL[0].strip()) + '?'
 
         m = rgxId.search(spltL[1])
         if not m.group():
@@ -735,8 +735,10 @@ UNION
         nd["icSourceLink"] = m.group(1).strip()
 
         incCritQL.append(nd)
-        
-    print "Inclusion criteria after extracting source ref and link: %s" % incCritQL 
+
+    # sort by Group
+    incCritQL.sort(key=lambda x:x["icGroup"])
+    print "Inclusion criteria after extracting metadata and sorting: %s" % incCritQL 
     return incCritQL
     
 # send sparql query to virtuoso endpoint for specific evidence type inference
