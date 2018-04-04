@@ -38,8 +38,9 @@ function showEvidenceQuestionsByMethod(mp_method) {
 
 // show specific inclusion criteria form
 function showInclusionCriteriaByMethod(mp_method, incCritQL) {
-    if (mp_method == "Case Report")
+    if (mp_method == "Case Report"){
         $("#cr-ic-questions-div").css("display","block");
+    }
     else if (mp_method == "Clinical study") {
         $("#ct-ic-questions-div").css("display","block");
 	var icdiv = document.getElementById("ct_ic_table_div");
@@ -53,8 +54,12 @@ function showInclusionCriteriaByMethod(mp_method, incCritQL) {
 		curGroup = incCritQL[i]["icGroup"]
 		newHtml += '<tr><td style="width:50%"><h3>'+ incCritQL[i]["icGroup"] + '</h3></td><td/><td/><td/></tr>';
 	    }
-	    
- 	    newHtml += '<tr>';
+
+	    if (i % 2 == 0){
+ 		newHtml += '<tr style="background-color:#def2ef">';
+	    } else {
+		newHtml += '<tr>';
+	    }
 	    newHtml += '<td style="width:50%"><label data-toggle="tooltip" data-placement="right" title="Tooltip on right">' + n + '. ' +  incCritQL[i]["icText"] + '&nbsp;<a target="new" href="../static/pdf/FDA-2017-guidance-on-clinical-DDI-evalutations-UCM292362.pdf#nameddest=' + incCritQL[i]["icSourceRef"].replace(/ /g,"") + '">' + incCritQL[i]["icSourceRef"] + '</a></label></td>';
 	    newHtml += '<td style="width:20%"><label class="radio-inline"><input type="radio" name="' + incCritQL[i]["icID"] + '" ng-model="myVar" value="yes">Yes</label></td>';
 	    newHtml += '<td style="width:20%"><label class="radio-inline"><input type="radio" name="' + incCritQL[i]["icID"] + '" ng-model="myVar" value="no">No</label></td>';
@@ -64,12 +69,16 @@ function showInclusionCriteriaByMethod(mp_method, incCritQL) {
 	newHtml += '</table>';
 	icdiv.innerHTML = newHtml;
     }
-    else if (mp_method == "Metabolic Experiment")
+
+    else if (mp_method == "Metabolic Experiment"){
         $("#ex-mt-ic-questions-div").css("display","block");
-    else if (mp_method == "Transport Experiment")
+    }
+    else if (mp_method == "Transport Experiment"){
         $("#ex-tp-ic-questions-div").css("display","block");
-    else 
+    }
+    else {
 	console.log("[ERROR] evidence type undefined: " + mp_method);
+    }
 }
 
 

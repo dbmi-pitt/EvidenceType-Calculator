@@ -11,7 +11,8 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX efo: <http://www.ebi.ac.uk/efo/>
 '''
 # SPARQL_GRAPH = '''<http://www.semanticweb.org/rdb20/ontologies/2017/8/dikb-etypes-09222017#>'''
-SPARQL_FROM_GRAPH = '''FROM <http://www.semanticweb.org/rdb20/ontologies/2018/1/dikb-etypes-0206018#>
+# SPARQL_GRAPH = '''http://www.semanticweb.org/rdb20/ontologies/2018/1/dikb-etypes-0206018#'''
+SPARQL_FROM_GRAPH = '''FROM <http://www.semanticweb.org/rdb20/ontologies/2018/1/dikb-etypes-04042018#>
 FROM <http://purl.obolibrary.org/obo/dideo.owl#>'''
 
 ### END SPARQL header
