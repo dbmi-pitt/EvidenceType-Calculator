@@ -9,6 +9,14 @@ https://docs.google.com/presentation/d/1g5FDLzVJnb0jIr9wQ8YlGIEBag4t6ioupZyd24hi
 -----------
 Deployment
 -----------
+Pre-requisite:
+This application submits SPARQL 1.1 queries to an endpoint (currently http://localhost:8890/sparql unless customized). The endpoint requires the following graphs to be loaded:
+
+- individuals.owl from commit 9881834 of https://github.com/DIDEO/DIDEO/tree/john/evidence-type-merge loaded as http://purl.obolibrary.org/obo/dideo.owl#. This version of DIDEO has the inclusion criteria as object properties.
+
+- dikb-etypes-04042018.xml from 9881834 of https://github.com/DIDEO/DIDEO/tree/john/evidence-type-merge loaded as http://www.semanticweb.org/rdb20/ontologies/2018/1/dikb-etypes-04042018#. This data file holds the inferred instance types.
+
+
 
 Web2py framework
 Download:
