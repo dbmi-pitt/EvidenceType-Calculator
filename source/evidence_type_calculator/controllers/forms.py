@@ -500,7 +500,8 @@ def loadInclusionCriteriaQuestions(ic_form_id, mp_method):
 
         jsonData = {"mp_method": mp_method, "is_meet_inclusion_criteria": ic_result, "is_agree_with_ic_result": ic_agree, "confidence": confidence, "disagree_comment": comment, "questions": {}}
         
-        sql2 = "SELECT evq.ui_code, evq.answer FROM evidence_type_form evf JOIN evidence_type_question evq ON evf.id = evq.evidence_type_form_id WHERE evf.id = '%s'" % ev_form_id
+        #sql2 = "SELECT evq.ui_code, evq.answer FROM evidence_type_form evf JOIN evidence_type_question evq ON evf.id = evq.evidence_type_form_id WHERE evf.id = '%s'" % ev_form_id
+        sql2 = "SELECT icq.ui_code, icq.answer FROM icl_form icf JOIN icl_question icq ON icf.id = icq.icl_form_id WHERE icf.id = '%s'" % ic_form_id
         questions = db.executesql(sql2)
         
         for (code, answer) in questions:
@@ -541,12 +542,13 @@ def saveEvidenceTypeQuestions():
         if ietTpl[2] != "":
             ietDefandNotes += "<br><i>Notes:</i> " + ietTpl[2]
         ietCount = ietTpl[3]
+        ietUri = ietTpl[4]
 
         if ietCount > 1:
             evType = " There are %s evidence types that match the specific values you entered. Please revise your selections or click the 'Disagree' button below to manually select an evidence type." % str(ietCount)
             ietDefandNotes = "<br><i>Suggestion:</i> The 'info' links next to each question provide definitions intended to help make selections."
             
-        r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s");jQuery("#inferred-evidencetype-def").html(" %s");$("#calculate").hide();' % (evType, ietDefandNotes)
+        r = '$("#inferred-evidencetype-div").css("display","block");$("#agree-with-inferred-div").css("display","block");jQuery("#inferred-evidencetype").val("%s");jQuery("#inferred-evidencetype-uri").val("%s");jQuery("#inferred-evidencetype-def").html(" %s");$("#calculate").hide();' % (evType, ietUri, ietDefandNotes)
 
         return r
 
@@ -593,9 +595,9 @@ def insertEvQuestionsByCodes(ui_codes, data, ev_form_id):
 def agreeInferred():
     print '[INFO] form controller save inferred evidence type...'
     
-    # db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], is_agree_with_inference = True)
+    db((db.evidence_type.participant_code == session.part_code) & (db.evidence_type.task_id == session.task_id)).update(inferred_evidence_type = request.vars["inferred-evidencetype"], inferred_evidence_type_uri = request.vars["inferred-evidencetype-uri"], is_agree_with_inference = True)
 
-    incCritQL = getEvInclCrit(request.vars["inferred-evidencetype"])  
+    incCritQL = getEvInclCrit(request.vars["inferred-evidencetype-uri"])  
     
     # hide agree/disagree buttons, show inclusion criteria form
     print '[INFO] showing inclusion criteria for session.mp_method = ' + session.mp_method
@@ -671,19 +673,22 @@ def getEvInclCrit(ev_type):
     # start building the evidence type query
     q = '''
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-select distinct ?ev_incl_cr 
-where {
+
+select distinct ?parEvType ?ic
+where
  {
-  ?evType rdfs:label "%s"; 
-     <http://purl.obolibrary.org/obo/dideo.owl#DIDEO_EV_Inclusion_Criterion> ?ev_incl_cr;
-     rdfs:subClassOf ?parEvType.
- }
-UNION
- {
-  ?parEvType <http://purl.obolibrary.org/obo/dideo.owl#DIDEO_EV_Inclusion_Criterion> ?ev_incl_cr.
- }
+   {<%s> rdfs:subClassOf+ ?parEvType.
+   ?parEvType <http://purl.obolibrary.org/obo/dideo.owl#DIDEO_EV_Inclusion_Criterion> ?ic.
+ } 
+UNION 
+  { 
+    OPTIONAL {
+       <%s> <http://purl.obolibrary.org/obo/dideo.owl#DIDEO_EV_Inclusion_Criterion> ?ic.
+       ?parEvType <http://purl.obolibrary.org/obo/dideo.owl#DIDEO_EV_Inclusion_Criterion> ?ic.
+    }
+  }
 }
-''' % ev_type.strip().strip("'")
+''' % (ev_type.strip(),ev_type.strip())
 
     print q
     tstore.setQuery(q)
@@ -704,34 +709,34 @@ UNION
     rgxAtag = re.compile(r'\((https://goo.gl/......)\) ')
     incCritQL = []
     for x in qr["results"]["bindings"]:
-        nd = {"icRaw":x["ev_incl_cr"]["value"]}
-        spltL = x["ev_incl_cr"]["value"].split('?')
+        nd = {"icRaw":x["ic"]["value"]}
+        spltL = x["ic"]["value"].split('?')
         if len(spltL) != 2:
-            print "ERROR: could not split on a question mark symbol - check the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            print "ERROR: could not split on a question mark symbol - check the source annotation property in DIDEO: %s" % x["ic"]["value"]
             return None        
         nd["icText"] = rgxAtag.sub(r'<a href="\1" target="new">\1</a> ', spltL[0].strip()) + '?'
 
         m = rgxId.search(spltL[1])
         if not m.group():
-            print "ERROR: could not extract ID from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            print "ERROR: could not extract ID from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ic"]["value"]
             return None        
         nd["icID"] = m.group(1).strip()
 
         m = rgxGroup.search(spltL[1])
         if not m.group():
-            print "ERROR: could not extract Group from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            print "ERROR: could not extract Group from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ic"]["value"]
             return None        
         nd["icGroup"] = m.group(1).strip()
 
         m = rgxSource.search(spltL[1])
         if not m.group():
-            print "ERROR: could not extract source reference from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            print "ERROR: could not extract source reference from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ic"]["value"]
             return None        
         nd["icSourceRef"] = m.group(1).strip()
 
         m = rgxLink.search(spltL[1])
         if not m.group():
-            print "ERROR: could not extract reference link from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ev_incl_cr"]["value"]
+            print "ERROR: could not extract reference link from the annotation property. Check the format of the source annotation property in DIDEO: %s" % x["ic"]["value"]
             return None
         nd["icSourceLink"] = m.group(1).strip()
 
@@ -942,6 +947,7 @@ WHERE {
     qr = tstore.query().convert()
     etRslt = ""
     definition = ""
+    uri = ""
     evTypeCnt = 0
     
     if len(qr["results"]["bindings"]) == 0:
@@ -950,7 +956,7 @@ WHERE {
         inferenceNotes += "Please revise your selections or click the 'Disagree' button below to manually select an evidence type."
     else:
         print "results: %s" % qr
-        evTypeData = [{"evItem":x["evItem"]["value"] ,"label":x["label"]["value"],"evType":x["evType"]["value"],"definition":x["definition"]["value"]} for x in qr["results"]["bindings"]]
+        evTypeData = [{"evItem":x["evItem"]["value"],"label":x["label"]["value"],"evType":x["evType"]["value"],"definition":x["definition"]["value"]} for x in qr["results"]["bindings"]]
         print "evTypeData: %s" % evTypeData
         curEvItem = ""
         evTypeCnt = len(evTypeData)
@@ -958,14 +964,16 @@ WHERE {
             if it["evItem"] == curEvItem:
                 etRslt += "-->%s" % it["label"]
                 definition += "-->%s" % it["definition"]
+                uri += "-->%s" % it["evType"]
             else:
                 curEvItem = it["evItem"]
                 etRslt += "%s" % it["label"]
                 definition += "%s" % it["definition"]
+                uri += "%s" % it["evType"]
         if etRslt == "":
             etRslt = "ERROR: Couldn't infer evidence type"
             
-    inferred_evidence_type = (etRslt, definition, inferenceNotes, evTypeCnt)
+    inferred_evidence_type = (etRslt, definition, inferenceNotes, evTypeCnt, uri)
     return inferred_evidence_type
 
 

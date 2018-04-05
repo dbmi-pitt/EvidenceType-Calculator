@@ -90,6 +90,7 @@
 	  <div id="inferred-evidencetype-div" style="display:none;">
 	    <label for="usr">Inferred evidence type:</label>
 	    <input name="inferred-evidencetype" type="text" class="form-control" id="inferred-evidencetype"/>
+	    <input name="inferred-evidencetype-uri"  type="hidden" value="" id="inferred-evidencetype-uri"/>
 	    <!-- The input element needs to be changed to a textarea to avoid cutting off text but the textarea element messes up  the rest of the page for some reason -->
 	    <!-- <textarea name="inferred-evidencetype" rows="3" class="form-control" id="inferred-evidencetype"/> -->
 	    <div name="inferred-evidencetype-def" id="inferred-evidencetype-def"></div>
@@ -99,7 +100,7 @@
 	  <!-- Agree or disagree with inferred result -->
 	  <br>
 	  <div id="agree-with-inferred-div" style="display:none;">
-	    <button type="button" class="btn btn-default" id="ev-type-agree" onclick="ajax('agreeInferred', ['inferred-evidencetype'], ':eval');">Agree</button>
+	    <button type="button" class="btn btn-default" id="ev-type-agree" onclick="ajax('agreeInferred', ['inferred-evidencetype','inferred-evidencetype-uri'], ':eval');">Agree</button>
 	    <button type="button" class="btn btn-default" id="ev-type-disagree" onclick="">Disagree</button>
 	  </div>
 
