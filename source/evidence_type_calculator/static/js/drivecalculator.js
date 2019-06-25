@@ -41,10 +41,20 @@ function showInclusionCriteriaByMethod(mp_method, incCritQL) {
     if (mp_method == "Case Report"){
         $("#cr-ic-questions-div").css("display","block");
     }
-    else if (mp_method == "Clinical study") {
-        $("#ct-ic-questions-div").css("display","block");
-	var icdiv = document.getElementById("ct_ic_table_div");
-	var newHtml = '<input id="confirmedEvType-value" value="Clinical study" type="hidden" name="confirmedEvType" />';
+    else if (mp_method == "Clinical study") || (mp_method == "Metabolic Experiment") {
+	var icdiv = null; 
+	var newHtml = "";
+	if (mp_method == "Clinical study") {
+            $("#ct-ic-questions-div").css("display","block");
+	    icdiv = document.getElementById("ct_ic_table_div");
+	    newHtml = '<input id="confirmedEvType-value" value="Clinical study" type="hidden" name="confirmedEvType" />';
+	}
+	else if (mp_method == "Metabolic Experiment") {
+	    $("#ex-mt-ic-questions-div").css("display","block");
+	    $("#ex_mt_ic_table_div").css("display","block");
+	    icdiv = document.getElementById("ex_mt_ic_table_div");
+	    newHtml = '<input id="confirmedEvType-value" value="Metabolic Experiment" type="hidden" name="confirmedEvType" />';
+	}
 	newHtml += '<table style="width:100%">'
 	var n = i;
 	var curGroup = "";
@@ -70,9 +80,6 @@ function showInclusionCriteriaByMethod(mp_method, incCritQL) {
 	icdiv.innerHTML = newHtml;
     }
 
-    else if (mp_method == "Metabolic Experiment"){
-        $("#ex-mt-ic-questions-div").css("display","block");
-    }
     else if (mp_method == "Transport Experiment"){
         $("#ex-tp-ic-questions-div").css("display","block");
     }
